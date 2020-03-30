@@ -6,6 +6,7 @@ import numpy as np
 import math
 
 from collections import defaultdict
+from typing import List
 
 np.random.seed(1)
 
@@ -14,8 +15,74 @@ s = 1  # constant s as parameter to sim
 
 
 class ElevatorCar(SimClasses.Resource):
-    def __init__(self):
-        self.passengers = defaultdict(list)  # {destination floor: list_of_passengers}
+    def __init__(self,
+                 floor_queues: List[SimClasses.FIFOQueue],  # index is floor number
+                 requests: List[List],
+                 initial_floor=0,
+                 capacity=20,
+                 door_move_time=0.0417,  # 2.5 seconds
+                 passenger_move_time=0.0167,  # 1 second
+                 acceleration=1.0,  # m/s^2
+                 top_speed=3.0,  # m/s
+                 floor_distance=4.5  # metres
+                 ):
+        # resource states
+        self.status = 0  # 0 for idle car, 1 for busy
+        self.Busy = 0
+        self.NumberOfUnits = capacity
+        self.NumBusy = SimClasses.CTStat()
+
+        # elevator system states
+        self.dest_passenger_map = defaultdict(list)  # {destination floor: list_of_passengers}
+        self.floor_queues = floor_queues
+        self.floor = initial_floor
+        self.requests = requests
+
+        # kinematic properties
+        self.door_move_time = door_move_time
+        self.passenger_move_time = passenger_move_time
+        self.acceleration = acceleration
+        self.top_speed = top_speed
+        self.floor_distance = floor_distance
+
+    def pickup(self, WaitingTimes: SimClasses.DTStat):
+        """Pick-up as many passengers as possible from current floor, update self resource, add waiting time data,
+        and return amount of time spent on floor."""
+        num_passengers = 0
+        while len(self.floor_queues[self.floor].ThisQueue) > 0 and self.NumberOfUnits > 0:
+            next_passenger = self.floor_queues[self.floor].Remove()
+            assert isinstance(next_passenger, Passenger)
+            self.Seize(1)
+            self.dest_passenger_map[next_passenger.destination_floor].append(next_passenger)
+            WaitingTimes.Record(SimClasses.Clock - next_passenger.CreateTime)
+            num_passengers += 1
+        return self.floor_dwell(num_passengers)
+
+    def dropoff(self, TimesInSystem: SimClasses.DTStat):
+        """Drop-off all passengers on self with destination as current floor. Add time"""
+        num_passengers = 0
+        while len(self.dest_passenger_map[self.floor]) > 0:
+            self.Free(1)
+            TimesInSystem.Record(SimClasses.Clock - self.dest_passenger_map[self.floor].pop(0).CreateTime)
+            num_passengers += 1
+        return self.floor_dwell(num_passengers)
+
+    def floor_dwell(self, num_passengers: int):
+        """Return amount of time to spend from door open, pickup/ dropoff, door close"""
+        return self.door_move_time + self.passenger_move_time * num_passengers + self.door_move_time
+
+    def move(self, destination_floor: int):
+        """Return amount of time required to move from current floor to destination floor after doors close."""
+        time_to_top_speed = self.top_speed / self.acceleration
+        distance_to_top_speed = self.acceleration * time_to_top_speed**2 / 2
+        total_distance = ((destination_floor - self.floor) * self.floor_distance)
+        self.floor = destination_floor
+        if distance_to_top_speed > total_distance / 2:
+            return (total_distance / self.acceleration) ** (1 / 2)
+        else:
+            return time_to_top_speed \
+                + (total_distance - (2 * distance_to_top_speed)) / self.top_speed / \
+                + time_to_top_speed
 
 
 class Passenger(SimClasses.Entity):
@@ -23,7 +90,10 @@ class Passenger(SimClasses.Entity):
                  num_floors: int):
         super().__init__()
         self.source_floor = math.floor(SimRNG.Uniform(0, num_floors, s))
-        self.destination_floor = math.floor(SimRNG.Uniform(0, num_floors, s))
+        while True:
+            self.destination_floor = math.floor(SimRNG.Uniform(0, num_floors, s))
+            if self.destination_floor != self.source_floor:
+                break
 
 
 class Replication:
@@ -43,24 +113,29 @@ class Replication:
         self.mean_passenger_interarrival = mean_passenger_interarrival
 
         self.floor_queues = [SimClasses.FIFOQueue() for _ in range(0, self.num_floors)]
-        self.cars = [ElevatorCar() for _ in range(0, self.num_cars)]
-        self.calendar = SimClasses.EventCalendar()
+        self.requests = [[0, 0] for _ in range(self.num_floors)]
+        # for each floor: index 0, 1 is down, up request respectively. value of 0 indicates no request.
+        self.cars = [ElevatorCar(floor_queues=self.floor_queues,
+                                 requests=self.requests) for _ in range(0, self.num_cars)]
 
+        self.Calendar = SimClasses.EventCalendar()
+        self.WaitingTimes = SimClasses.DTStat()
+        self.TimesInSystem = SimClasses.DTStat()
         self.CTStats = []
-        self.DTStats = []
-        self.TheQueues = []
-        self.TheResources = []
+        self.DTStats = [self.WaitingTimes, self.TimesInSystem]
+        self.TheQueues = [] + self.floor_queues
+        self.TheResources = [] + self.cars
         SimFunctions.SimFunctionsInit(
-            self.calendar,
+            self.Calendar,
             self.TheQueues,
             self.CTStats,
             self.DTStats,
             self.TheResources)
         # resets all, including SimClasses.Clock
 
-        SimFunctions.Schedule(self.calendar, "PassengerArrival", 0)
-        SimFunctions.Schedule(self.calendar, "EndSimulation", self.run_length)
-        SimFunctions.Schedule(self.calendar, "ClearIt", self.warm_up)
+        SimFunctions.Schedule(self.Calendar, "PassengerArrival", 0)
+        SimFunctions.Schedule(self.Calendar, "EndSimulation", self.run_length)
+        SimFunctions.Schedule(self.Calendar, "ClearIt", self.warm_up)
 
     def __call__(self):
         return self.main()
@@ -68,19 +143,27 @@ class Replication:
     def passenger_arrival_event(self):
         new_passenger = Passenger(self.num_floors)
         self.floor_queues[new_passenger.source_floor].Add(new_passenger)
-        SimFunctions.Schedule(self.calendar, "PassengerArrival", SimRNG.Expon(self.mean_passenger_interarrival, 1))
+        self.requests[new_passenger.destination_floor][int(
+            new_passenger.destination_floor > new_passenger.source_floor)] = 1
+        SimFunctions.Schedule(self.Calendar, "PassengerArrival", SimRNG.Expon(self.mean_passenger_interarrival, 1))
         pass
 
     def main(self):
-        NextEvent = self.calendar.ThisCalendar[0]
+        NextEvent = self.Calendar.ThisCalendar[0]
 
+        print(f"waiting passengers: [(source floor, create time, destination floor), () ...]")
         while NextEvent.EventType != "EndSimulation":
-            NextEvent = self.calendar.Remove()
+            NextEvent = self.Calendar.Remove()
             SimClasses.Clock = NextEvent.EventTime
             if NextEvent.EventType == 'PassengerArrival':
                 self.passenger_arrival_event()
             elif NextEvent.EventType == "ClearIt":
                 SimFunctions.ClearStats(self.CTStats, self.DTStats)
+
+            # trace
+            print(NextEvent.EventType)
+            print([(i, p.CreateTime, p.destination_floor)
+                   for i, q in enumerate(self.floor_queues) for p in q.ThisQueue])
 
     @classmethod
     def CI_95(cls, data):
@@ -101,3 +184,8 @@ class Experiment:
 
     def main(self):
         pass
+
+
+r0 = Replication()
+r0()
+pass
