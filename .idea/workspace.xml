@@ -33,32 +33,32 @@
         <counts>
           <entry key="Python Console" value="252" />
           <entry key="dummy" value="4" />
-          <entry key="py" value="7693" />
+          <entry key="py" value="8901" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="PLAIN_TEXT" value="4" />
-          <entry key="Python" value="7945" />
+          <entry key="Python" value="9153" />
         </counts>
       </usages-collector>
     </session>
+  </component>
+  <component name="FavoritesManager">
+    <favorites_list name="code" />
   </component>
   <component name="FileEditorManager">
     <leaf>
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="202">
-              <caret line="212" column="46" selection-start-line="212" selection-start-column="46" selection-end-line="212" selection-end-column="46" />
+            <state relative-caret-position="913">
+              <caret line="228" lean-forward="true" selection-start-line="228" selection-end-line="228" />
               <folding>
                 <element signature="e#1#46#0" expanded="true" />
-                <marker date="1585614559668" expanded="true" signature="833:836" ph="..." />
-                <marker date="1585614559668" expanded="true" signature="3666:3675" ph="..." />
-                <marker date="1585614559668" expanded="true" signature="3666:3716" ph="..." />
-                <marker date="1585614559668" expanded="true" signature="6796:6945" ph="..." />
-                <marker date="1585614559668" expanded="true" signature="7021:7034" ph="..." />
-                <marker date="1585614559668" expanded="true" signature="7563:7670" ph="..." />
+                <marker date="1585618347358" expanded="true" signature="747:750" ph="..." />
+                <marker date="1585618347358" expanded="true" signature="2405:2430" ph="..." />
+                <marker date="1585618347358" expanded="true" signature="3531:3540" ph="..." />
               </folding>
             </state>
           </provider>
@@ -67,8 +67,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pythonsim/SimFunctions.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="249">
-              <caret line="59" selection-start-line="59" selection-end-line="59" />
+            <state relative-caret-position="24">
+              <caret line="44" column="4" selection-start-line="44" selection-start-column="4" selection-end-line="44" selection-end-column="4" />
             </state>
           </provider>
         </entry>
@@ -76,8 +76,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pythonsim/SimClasses.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="128">
-              <caret line="98" column="6" selection-start-line="98" selection-start-column="6" selection-end-line="98" selection-end-column="6" />
+            <state relative-caret-position="120">
+              <caret line="115" column="8" selection-start-line="115" selection-start-column="8" selection-end-line="115" selection-end-column="8" />
             </state>
           </provider>
         </entry>
@@ -218,8 +218,8 @@
       <window_info anchor="bottom" id="Event Log" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.38686132" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.3678832" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.4058394" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.53138685" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -236,18 +236,23 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/main.py</url>
-          <line>241</line>
+          <line>266</line>
           <option name="timeStamp" value="2" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/main.py</url>
-          <line>211</line>
-          <option name="timeStamp" value="3" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/pythonsim/SimFunctions.py</url>
           <line>63</line>
           <option name="timeStamp" value="6" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/main.py</url>
+          <line>99</line>
+          <option name="timeStamp" value="7" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/main.py</url>
+          <line>123</line>
+          <option name="timeStamp" value="9" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -270,32 +275,29 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pythonsim/SimFunctions.py">
+    <entry file="file://$PROJECT_DIR$/pythonsim/SimClasses.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="249">
-          <caret line="59" selection-start-line="59" selection-end-line="59" />
+        <state relative-caret-position="120">
+          <caret line="115" column="8" selection-start-line="115" selection-start-column="8" selection-end-line="115" selection-end-column="8" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pythonsim/SimClasses.py">
+    <entry file="file://$PROJECT_DIR$/pythonsim/SimFunctions.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="128">
-          <caret line="98" column="6" selection-start-line="98" selection-start-column="6" selection-end-line="98" selection-end-column="6" />
+        <state relative-caret-position="24">
+          <caret line="44" column="4" selection-start-line="44" selection-start-column="4" selection-end-line="44" selection-end-column="4" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="202">
-          <caret line="212" column="46" selection-start-line="212" selection-start-column="46" selection-end-line="212" selection-end-column="46" />
+        <state relative-caret-position="913">
+          <caret line="228" lean-forward="true" selection-start-line="228" selection-end-line="228" />
           <folding>
             <element signature="e#1#46#0" expanded="true" />
-            <marker date="1585614559668" expanded="true" signature="833:836" ph="..." />
-            <marker date="1585614559668" expanded="true" signature="3666:3675" ph="..." />
-            <marker date="1585614559668" expanded="true" signature="3666:3716" ph="..." />
-            <marker date="1585614559668" expanded="true" signature="6796:6945" ph="..." />
-            <marker date="1585614559668" expanded="true" signature="7021:7034" ph="..." />
-            <marker date="1585614559668" expanded="true" signature="7563:7670" ph="..." />
+            <marker date="1585618347358" expanded="true" signature="747:750" ph="..." />
+            <marker date="1585618347358" expanded="true" signature="2405:2430" ph="..." />
+            <marker date="1585618347358" expanded="true" signature="3531:3540" ph="..." />
           </folding>
         </state>
       </provider>

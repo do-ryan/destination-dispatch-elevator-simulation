@@ -17,12 +17,10 @@ s = 1  # constant s as parameter to sim
 
 class FunctionalEventNotice(SimClasses.EventNotice):
     def __init__(self,
-                 Calendar: SimClasses.EventCalendar,
                  EventTime: float,
                  outer):
         """outer refers to an outer scope class. This class is designed to be nested in another class"""
         super().__init__()
-        self.Calendar = Calendar
         self.EventTime = SimClasses.Clock + EventTime
         self.outer = outer
 
@@ -72,48 +70,71 @@ class ElevatorCar(SimClasses.Resource):
         self.WaitingTimes = WaitingTimes
         self.TimesInSystem = TimesInSystem
 
-    def pickup(self):
-        """Pick-up as many passengers as possible from current floor, update self resource, add waiting time data,
-        and return amount of time spent on floor."""
-        num_passengers = 0
-        while len(self.floor_queues[self.floor].ThisQueue) > 0 and self.NumberOfUnits > 0:
-            next_passenger = self.floor_queues[self.floor].Remove()
-            assert isinstance(next_passenger, Passenger)
-            self.Seize(1)
-            self.dest_passenger_map[next_passenger.destination_floor].append(next_passenger)
-            self.WaitingTimes.Record(SimClasses.Clock - next_passenger.CreateTime)
-            num_passengers += 1
-        return self.floor_dwell(num_passengers)
+    class PickupEvent(FunctionalEventNotice):
+        def event(self):
+            """Pick-up as many passengers as possible from current floor, update self resource, add waiting time data,
+            and return amount of time spent on floor."""
+            num_passengers = 0
+            while len(self.outer.floor_queues[self.outer.floor].ThisQueue) > 0 and self.outer.NumberOfUnits > 0:
+                next_passenger = self.outer.floor_queues[self.outer.floor].Remove()
+                assert isinstance(next_passenger, Passenger)
+                self.outer.Seize(1)
+                self.outer.dest_passenger_map[next_passenger.destination_floor].append(next_passenger)
+                self.outer.WaitingTimes.Record(SimClasses.Clock - next_passenger.CreateTime)
+                num_passengers += 1
+            self.outer.Calendar.Schedule(self.outer.PickupEndEvent(EventTime=self.outer.floor_dwell(num_passengers),
+                                                                   outer=self.outer))
 
-    def dropoff(self):
-        """Drop-off all passengers on self with destination as current floor. Add time"""
-        num_passengers = 0
-        while len(self.dest_passenger_map[self.floor]) > 0:
-            self.Free(1)
-            self.TimesInSystem.Record(SimClasses.Clock - self.dest_passenger_map[self.floor].pop(0).CreateTime)
-            num_passengers += 1
-            SimFunctions.Schedule(self.Calendar, self.after_dropoff, self.floor_dwell(num_passengers), 1)
+    class PickupEndEvent(FunctionalEventNotice):
+        def event(self):
+            pass
 
-    def after_dropoff(self):
-        # search for next task
-        pass
+    class DropoffEvent(FunctionalEventNotice):
+        def event(self):
+            """Drop-off all passengers on self with destination as current floor. Add time"""
+            num_passengers = 0
+            while len(self.outer.dest_passenger_map[self.outer.floor]) > 0:
+                self.outer.Free(1)
+                self.outer.TimesInSystem.Record(SimClasses.Clock -
+                                                self.outer.dest_passenger_map[self.outer.floor].pop(0).CreateTime)
+                num_passengers += 1
+                self.outer.Calendar.Schedule(
+                    self.outer.DropoffEndEvent(
+                        EventTime=self.outer.floor_dwell(num_passengers),
+                        outer=self.outer))
+
+    class DropoffEndEvent(FunctionalEventNotice):
+        def event(self):
+            pass
 
     def floor_dwell(self, num_passengers: int):
         """Return amount of time to spend from door open, pickup/ dropoff, door close"""
         return self.door_move_time + self.passenger_move_time * num_passengers + self.door_move_time
 
-    def move(self, destination_floor: int):
-        """Return amount of time required to move from current floor to destination floor after doors close."""
-        time_to_top_speed = self.top_speed / self.acceleration
-        distance_to_top_speed = self.acceleration * time_to_top_speed**2 / 2
-        total_distance = ((destination_floor - self.floor) * self.floor_distance)
-        self.next_floor = destination_floor
-        if distance_to_top_speed > total_distance / 2:
-            return (total_distance / self.acceleration) ** (1 / 2)
-        else:
-            return time_to_top_speed \
-                + (total_distance - (2 * distance_to_top_speed)) / self.top_speed / \
-                + time_to_top_speed
+    class MoveEvent(FunctionalEventNotice):
+        def __init__(self, destination_floor: int, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.destination_floor = destination_floor
+
+        def event(self):
+            """Return amount of time required to move from current floor to destination floor after doors close."""
+            time_to_top_speed = self.outer.top_speed / self.outer.acceleration
+            distance_to_top_speed = self.outer.acceleration * time_to_top_speed**2 / 2
+            total_distance = ((self.destination_floor - self.outer.floor) * self.outer.floor_distance)
+            self.outer.next_floor = self.destination_floor
+            if distance_to_top_speed > total_distance / 2:
+                travel_time = (total_distance / self.outer.acceleration) ** (1 / 2)
+            else:
+                travel_time = time_to_top_speed \
+                              + (total_distance - (2 * distance_to_top_speed)) / self.outer.top_speed \
+                              + time_to_top_speed
+            self.outer.Calendar.Schedule(
+                self.outer.MoveEndEvent(EventTime=travel_time / 60, outer=self.outer))
+
+    class MoveEndEvent(FunctionalEventNotice):
+        def event(self):
+            self.outer.floor = self.outer.next_floor
+            self.outer.next_floor = None
 
 
 class Passenger(SimClasses.Entity):
@@ -187,34 +208,38 @@ class Replication:
             self.outer.floor_queues[new_passenger.source_floor].Add(new_passenger)
 
             # self.assign_request(new_passenger)
-            self.Calendar.Schedule(
+            self.outer.Calendar.Schedule(
                 self.outer.PassengerArrivalEvent(
-                    Calendar=self.Calendar,
                     EventTime=SimRNG.Expon(
                         self.outer.mean_passenger_interarrival,
                         1),
                     outer=self.outer))
 
-    class ClearIt(FunctionalEventNotice):
+    class ClearItEvent(FunctionalEventNotice):
         def event(self):
             SimFunctions.ClearStats(self.outer.CTStats, self.outer.DTStats)
 
     def main(self):
-        self.Calendar.Schedule(self.PassengerArrivalEvent(Calendar=self.Calendar, EventTime=0, outer=self))
-        self.Calendar.Schedule(self.ClearIt(Calendar=self.Calendar, EventTime=0, outer=self))
+        self.Calendar.Schedule(self.PassengerArrivalEvent(EventTime=0, outer=self))
+        self.Calendar.Schedule(self.ClearItEvent(EventTime=0, outer=self))
+        # self.Calendar.Schedule(self.cars[0].PickupEvent(EventTime=50, outer=self.cars[0]))  # test
+        # self.Calendar.Schedule(self.cars[0].MoveEvent(EventTime=60, outer=self.cars[0], destination_floor=6))  # test
+        # self.Calendar.Schedule(self.cars[0].DropoffEvent(EventTime=70, outer=self.cars[0]))  # test
         SimFunctions.Schedule(self.Calendar, "EndSimulation", self.run_length)
 
         NextEvent = self.Calendar.Remove()
 
-        print(f"waiting passengers: [(source floor, create time, destination floor), () ...]")
+        print(f"waiting passengers: [(source floor, create time, destination floor), ...] "
+              f"car passengers: [{{floor: [passengers]}}, ...]")
         while NextEvent.EventType != "EndSimulation":
-            SimClasses.Clock = NextEvent.EventTime
+            SimClasses.Clock = NextEvent.EventTime  # advance clock to start of next event
             NextEvent.event()
-            NextEvent = self.Calendar.Remove()
-            # trace
-            print(NextEvent)
+            print(NextEvent, SimClasses.Clock)
             print([(i, p.CreateTime, p.destination_floor)
-                   for i, q in enumerate(self.floor_queues) for p in q.ThisQueue])
+                   for i, q in enumerate(self.floor_queues) for p in q.ThisQueue],
+                  [car.dest_passenger_map for car in self.cars])
+            # trace
+            NextEvent = self.Calendar.Remove()
 
     @classmethod
     def CI_95(cls, data):
