@@ -6,8 +6,6 @@ import numpy as np
 import math
 import itertools
 
-from collections import defaultdict
-from typing import List
 from abc import abstractmethod
 
 np.random.seed(1)
@@ -171,7 +169,7 @@ class ElevatorCar(SimClasses.Resource):
             self.outer.next_action()
 
     def next_action(self):
-        """Triggered after moving, or done a transfer."""
+        """Triggered after moving, or done a transfer. Schedules event representing next action."""
         if np.sum(self.requests) == 0 and len(
                 [queue for queue in itertools.chain.from_iterable(self.dest_passenger_map)]) == 0:
             # if no requests nor drop-offs, go idle.
@@ -193,17 +191,20 @@ class ElevatorCar(SimClasses.Resource):
                             + len([queue for queue in itertools.chain.from_iterable(self.dest_passenger_map)])\
                             > np.sum(self.requests[:, 0]) \
                             + len([queue for queue in itertools.chain.from_iterable(self.dest_passenger_map)]):
-                        #  if there are more up-bound requests than down-bound
+                        #  if there are more up-bound requests than down-bound, go up-bound.
                         self.direction = 1
-                        scan_start = 0
+                        scan_start = 0  # go to globally lowest up-bound request
                     else:
                         self.direction = 0
                         scan_start = self.requests.shape[0]-1
-                        # go to highest down-bound request
+                        # go to globally highest down-bound request
 
                 # from here downwards, if car is currently idle, then it will have chosen a direction.
+                # if idle,
                 # it will start at the globally lowest upbound task, or highest downbound task, dropping off passengers
                 # on the car along the way.
+                # if the car already has a direction, it will sequentially take tasks in that direction until all
+                # tasks are finished in that direction.
                 if self.direction == 1:
                     # if going upwards
                     if np.max(self.requests[:, 1][scan_start:]) > 0:
@@ -330,28 +331,40 @@ class Replication:
             assigned_car = None
             best_suitability = 0
             request_floor = self.new_passenger.source_floor
+            # below, sometimes a car may not have a next floor but is not idle either. This occurs when a car is idle
+            # and a passenger arrives on its current floor.
             for car in self.outer.cars:
+                suitability = 0
                 #  TODO: still need to consider distance
-                if car.requests[request_floor, int(self.new_passenger.direction)] == 1 and best_suitability < 5:
+                if car.requests[request_floor, int(self.new_passenger.direction)] == 1:
                     # if car is already allocated there
-                    best_suitability = 5
-                    assigned_car = car
+                    suitability = 5
                 elif car.status == 0 and best_suitability <= 4:  # if car is idle
                     assert car.next_floor is None
-                    best_suitability = 4
-                    assigned_car = car
-                elif (request_floor > car.next_floor and car.direction) or (request_floor < car.next_floor and not car.direction):
+                    suitability = 4
+                elif (request_floor > (car.next_floor or car.floor) and car.direction)\
+                    or (request_floor < (car.next_floor or car.floor) and not car.direction):
                     # if this is an incoming car
-                    if self.new_passenger.direction != car.direction and best_suitability < 2:  # if intended direction is different
-                        best_suitability = 2
-                        assigned_car = car
-                    elif self.new_passenger.direction == car.direction and best_suitability < 3:  # if intended direction is same
-                        best_suitability = 3
-                        assigned_car = car
+                    if self.new_passenger.direction == car.direction and best_suitability < 3:
+                        # if intended direction is same
+                        suitability = 3
+                    elif self.new_passenger.direction != car.direction and best_suitability < 2:
+                        # if intended direction is different
+                        suitability = 2
                 else:
-                    if best_suitability < 1:
-                        best_suitability = 1
+                    suitability = 1
+                # determine suitability of this car
+
+                if suitability > best_suitability:
+                    assigned_car = car
+                    best_suitability = suitability
+                # update most suitable so far
+
+                elif suitability == best_suitability:
+                    if abs(request_floor - (car.next_floor or car.floor)) \
+                            < abs(request_floor - (assigned_car.next_floor or assigned_car.floor)):
                         assigned_car = car
+                    # if this car's suitability is tied with best so far, use proximity as tie breaker
 
             assert assigned_car is not None
             assigned_car.requests[request_floor, int(self.new_passenger.direction)] = 1
@@ -381,9 +394,9 @@ class Replication:
     def main(self):
         self.Calendar.Schedule(self.PassengerArrivalEvent(EventTime=0, outer=self))
         self.Calendar.Schedule(self.ClearItEvent(EventTime=0, outer=self))
-        self.Calendar.Schedule(self.cars[0].PickupEvent(EventTime=50, outer=self.cars[0]))  # test
-        self.Calendar.Schedule(self.cars[0].MoveEvent(EventTime=60, outer=self.cars[0], destination_floor=6))  # test
-        self.Calendar.Schedule(self.cars[0].DropoffEvent(EventTime=70, outer=self.cars[0]))  # test
+        # self.Calendar.Schedule(self.cars[0].PickupEvent(EventTime=50, outer=self.cars[0]))  # test
+        # self.Calendar.Schedule(self.cars[0].MoveEvent(EventTime=60, outer=self.cars[0], destination_floor=6))  # test
+        # self.Calendar.Schedule(self.cars[0].DropoffEvent(EventTime=70, outer=self.cars[0]))  # test
         SimFunctions.Schedule(self.Calendar, "EndSimulation", self.run_length)
 
         NextEvent = self.Calendar.Remove()
@@ -396,7 +409,7 @@ class Replication:
             print(NextEvent, SimClasses.Clock)
             print([(i, p.CreateTime, p.destination_floor)
                    for i, q in enumerate(self.floor_queues) for p in q.ThisQueue])
-            print([f"{car.dest_passenger_map} floor: {car.floor} status: {car.status} direction: {car.direction}" for car in self.cars])
+            print([f"{car.dest_passenger_map} floor: {car.floor} next floor: {car.next_floor} status: {car.status} direction: {car.direction}" for car in self.cars])
             print([car.requests for car in self.cars])
             # trace
             NextEvent = self.Calendar.Remove()
