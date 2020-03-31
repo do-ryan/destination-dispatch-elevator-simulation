@@ -111,7 +111,8 @@ class EventCalendar():
     # EventNotices ordered by time. Based on an object created by Steve Roberts.
 
     def __init__(self):
-        self.ThisCalendar = []   
+        self.ThisCalendar = []
+
     def Schedule(self,addedEvent):
         # Add EventNotice in EventTime order
         if len(self.ThisCalendar) == 0:  #no events in calendar
