@@ -16,6 +16,7 @@ s = 1  # constant s as parameter to sim
 
 
 class FunctionalEventNotice(SimClasses.EventNotice):
+
     def __init__(self,
                  EventTime: float,
                  outer):
@@ -70,6 +71,10 @@ class ElevatorCar(SimClasses.Resource):
         self.WaitingTimes = WaitingTimes
         self.TimesInSystem = TimesInSystem
 
+    def floor_dwell(self, num_passengers: int):
+        """Return amount of time to spend from door open, pickup/ dropoff, door close"""
+        return self.door_move_time + self.passenger_move_time * num_passengers + self.door_move_time
+
     class PickupEvent(FunctionalEventNotice):
         def event(self):
             """Pick-up as many passengers as possible from current floor, update self resource, add waiting time data,
@@ -106,10 +111,6 @@ class ElevatorCar(SimClasses.Resource):
     class DropoffEndEvent(FunctionalEventNotice):
         def event(self):
             pass
-
-    def floor_dwell(self, num_passengers: int):
-        """Return amount of time to spend from door open, pickup/ dropoff, door close"""
-        return self.door_move_time + self.passenger_move_time * num_passengers + self.door_move_time
 
     class MoveEvent(FunctionalEventNotice):
         def __init__(self, destination_floor: int, *args, **kwargs):
@@ -190,17 +191,35 @@ class Replication:
     def __call__(self):
         return self.main()
 
-    #
-    # def assign_request(self, new_passenger: Passenger):
-    #     assigned_car = None
-    #     for car in self.cars:
-    #         if car.status == 0:
-    #             assigned_car = car
-    #             break
-    #     if assigned_car is None:
-    #
-    #     self.requests[new_passenger.destination_floor][int(
-    #         new_passenger.destination_floor > new_passenger.source_floor)] = 1
+    class AssignRequestEvent(FunctionalEventNotice):
+        def __init__(self, new_passenger: Passenger, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.new_passenger = new_passenger
+
+        def event(self):
+            assigned_car = None
+            best_suitability = 0
+            request_floor = self.new_passenger.source_floor
+            passenger_direction = self.new_passenger.destination_floor > request_floor
+            for car in self.outer.cars:
+                if car.status == 0:  # if car is idle, choose it
+                    assert car.next_floor is None
+                    best_suitability = 4
+                    assigned_car = car
+                    break
+                direction = car.next_floor > car.floor
+                if (request_floor > car.next_floor and direction) or (request_floor < car.next_floor and not direction):
+                    # if this is an incoming car
+                    if passenger_direction != direction and best_suitability < 2:  # if intended direction is different
+                        best_suitability = 2
+                    elif passenger_direction == direction and best_suitability < 3:  # if intended direction is same
+                        best_suitability = 3
+                else:
+                    best_suitability = 1
+                assigned_car = car
+
+            assert assigned_car is not None
+            assigned_car.requests[request_floor][passenger_direction] = 1
 
     class PassengerArrivalEvent(FunctionalEventNotice):
         def event(self):
@@ -212,8 +231,10 @@ class Replication:
                 self.outer.PassengerArrivalEvent(
                     EventTime=SimRNG.Expon(
                         self.outer.mean_passenger_interarrival,
-                        1),
-                    outer=self.outer))
+                        1), outer=self.outer))
+            self.outer.Calendar.Schedule(self.outer.AssignRequestEvent(EventTime=0,
+                                                                       outer=self.outer,
+                                                                       new_passenger=new_passenger))
 
     class ClearItEvent(FunctionalEventNotice):
         def event(self):
@@ -222,9 +243,9 @@ class Replication:
     def main(self):
         self.Calendar.Schedule(self.PassengerArrivalEvent(EventTime=0, outer=self))
         self.Calendar.Schedule(self.ClearItEvent(EventTime=0, outer=self))
-        # self.Calendar.Schedule(self.cars[0].PickupEvent(EventTime=50, outer=self.cars[0]))  # test
-        # self.Calendar.Schedule(self.cars[0].MoveEvent(EventTime=60, outer=self.cars[0], destination_floor=6))  # test
-        # self.Calendar.Schedule(self.cars[0].DropoffEvent(EventTime=70, outer=self.cars[0]))  # test
+        self.Calendar.Schedule(self.cars[0].PickupEvent(EventTime=50, outer=self.cars[0]))  # test
+        self.Calendar.Schedule(self.cars[0].MoveEvent(EventTime=60, outer=self.cars[0], destination_floor=6))  # test
+        self.Calendar.Schedule(self.cars[0].DropoffEvent(EventTime=70, outer=self.cars[0]))  # test
         SimFunctions.Schedule(self.Calendar, "EndSimulation", self.run_length)
 
         NextEvent = self.Calendar.Remove()
