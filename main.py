@@ -146,13 +146,14 @@ class Replication:
 
             print(NextEvent, SimClasses.Clock)
             # pp.pprint([(e, e.EventTime, e.outer) for e in self.Calendar.ThisCalendar])
-            print([(i, p.CreateTime, p.destination_floor)
+            print([(i, p.destination_floor)
                    for i, q in enumerate(self.floor_queues) for p in q.ThisQueue])
             for car in self.cars:
-                print(f"{[len(floor) for floor in car.dest_passenger_map]} floor: {car.floor} next floor: {car.next_floor} status: {car.status} direction: {car.direction}")
+                print(f"{[len(floor) for floor in car.dest_passenger_map]} floor: {car.floor} "
+                      f"next floor: {car.next_floor} status: {car.status} direction: {car.direction}")
             print([car.requests for car in self.cars])
             # trace
-            
+
             NextEvent = self.Calendar.Remove()
 
     @classmethod
@@ -176,6 +177,6 @@ class Experiment:
         pass
 
 
-r0 = Replication(run_length=120, mean_passenger_interarrival=0.2, num_cars=2)
+r0 = Replication(run_length=120, mean_passenger_interarrival=0.15, num_cars=3)
 r0()
 pass

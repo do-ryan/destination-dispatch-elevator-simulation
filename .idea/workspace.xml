@@ -33,13 +33,13 @@
         <counts>
           <entry key="Python Console" value="1097" />
           <entry key="dummy" value="47" />
-          <entry key="py" value="20752" />
+          <entry key="py" value="21048" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="PLAIN_TEXT" value="47" />
-          <entry key="Python" value="21849" />
+          <entry key="Python" value="22145" />
         </counts>
       </usages-collector>
     </session>
@@ -49,14 +49,14 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="322">
-              <caret line="104" column="89" lean-forward="true" selection-start-line="104" selection-start-column="89" selection-end-line="104" selection-end-column="89" />
+            <state relative-caret-position="477">
+              <caret line="132" column="26" selection-start-line="132" selection-start-column="26" selection-end-line="132" selection-end-column="26" />
               <folding>
                 <element signature="e#0#48#0" expanded="true" />
-                <marker date="1585713753696" expanded="true" signature="5292:5340" ph="..." />
+                <marker date="1585760855416" expanded="true" signature="5292:5340" ph="..." />
               </folding>
             </state>
           </provider>
@@ -65,8 +65,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/entities.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="518">
-              <caret line="222" column="46" lean-forward="true" selection-start-line="222" selection-start-column="46" selection-end-line="222" selection-end-column="46" />
+            <state relative-caret-position="644">
+              <caret line="266" selection-start-line="266" selection-end-line="266" />
               <folding>
                 <element signature="e#0#48#0" expanded="true" />
               </folding>
@@ -77,7 +77,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/custom_library.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="60">
+            <state relative-caret-position="-7">
               <caret line="4" selection-start-line="4" selection-end-line="4" />
               <folding>
                 <element signature="e#0#41#0" expanded="true" />
@@ -87,37 +87,19 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/Library/Caches/PyCharmCE2018.2/python_stubs/-1199943126/numpy/core/_multiarray_umath.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="215">
-              <caret line="5492" column="4" selection-start-line="5492" selection-start-column="4" selection-end-line="5492" selection-end-column="4" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file:///usr/local/lib/python3.7/site-packages/numpy/core/fromnumeric.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="79">
-              <caret line="46" selection-start-line="46" selection-end-line="46" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pythonsim/SimFunctions.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="144">
+            <state relative-caret-position="-7">
               <caret line="52" column="4" selection-start-line="52" selection-start-column="4" selection-end-line="52" selection-end-column="4" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/pythonsim/SimClasses.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
-              <caret line="115" column="8" selection-start-line="115" selection-start-column="8" selection-end-line="115" selection-end-column="8" />
+            <state relative-caret-position="657">
+              <caret line="136" column="4" selection-start-line="136" selection-start-column="4" selection-end-line="136" selection-end-column="4" />
             </state>
           </provider>
         </entry>
@@ -180,15 +162,15 @@
         <option value="$PROJECT_DIR$/h4_q2.py" />
         <option value="$PROJECT_DIR$/functional_event_notice.py" />
         <option value="$PROJECT_DIR$/ElevatorCar.py" />
-        <option value="$PROJECT_DIR$/pythonsim/SimClasses.py" />
         <option value="$PROJECT_DIR$/custom_library.py" />
         <option value="$PROJECT_DIR$/entities.py" />
         <option value="$PROJECT_DIR$/main.py" />
+        <option value="$PROJECT_DIR$/pythonsim/SimClasses.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds">
-    <option name="y" value="23" />
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="y" value="303" />
     <option name="width" value="1280" />
     <option name="height" value="777" />
   </component>
@@ -214,7 +196,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
+    <property name="settings.editor.selected.configurable" value="preferences.general" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -270,11 +252,11 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1280" height="777" extended-state="6" />
+    <frame x="0" y="23" width="1920" height="1057" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Favorites" side_tool="true" />
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.1810961" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.120316625" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Version Control" show_stripe_button="false" />
       <window_info anchor="bottom" id="Python Console" weight="0.329927" />
@@ -282,8 +264,8 @@
       <window_info anchor="bottom" id="Event Log" side_tool="true" weight="0.329927" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.96642333" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.7547445" />
+      <window_info anchor="bottom" x="334" y="1125" width="1280" height="755" id="Run" order="2" type="WINDOWED" visible="true" weight="0.9658031" />
+      <window_info active="true" anchor="bottom" x="334" y="1125" width="1280" height="755" id="Debug" order="3" type="WINDOWED" visible="true" weight="0.7547445" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -300,7 +282,7 @@
       <breakpoints>
         <line-breakpoint suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/main.py</url>
-          <line>177</line>
+          <line>181</line>
           <option name="timeStamp" value="2" />
         </line-breakpoint>
         <line-breakpoint suspend="THREAD" type="python-line">
@@ -316,13 +298,18 @@
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <condition expression="SimClasses.Clock == 14.059572162807008" language="Python" />
           <url>file://$PROJECT_DIR$/entities.py</url>
-          <line>147</line>
+          <line>151</line>
           <option name="timeStamp" value="71" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/main.py</url>
-          <line>146</line>
+          <line>147</line>
           <option name="timeStamp" value="72" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/main.py</url>
+          <line>136</line>
+          <option name="timeStamp" value="73" />
         </line-breakpoint>
         <breakpoint enabled="true" type="python-exception">
           <properties notifyOnTerminate="true" exception="builtins.TypeError">
@@ -430,7 +417,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/pythonsim/SimFunctions.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="144">
+        <state relative-caret-position="-7">
           <caret line="52" column="4" selection-start-line="52" selection-start-column="4" selection-end-line="52" selection-end-column="4" />
         </state>
       </provider>
@@ -442,16 +429,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pythonsim/SimClasses.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="115" column="8" selection-start-line="115" selection-start-column="8" selection-end-line="115" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/custom_library.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
+        <state relative-caret-position="-7">
           <caret line="4" selection-start-line="4" selection-end-line="4" />
           <folding>
             <element signature="e#0#41#0" expanded="true" />
@@ -461,8 +441,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/entities.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="518">
-          <caret line="222" column="46" lean-forward="true" selection-start-line="222" selection-start-column="46" selection-end-line="222" selection-end-column="46" />
+        <state relative-caret-position="644">
+          <caret line="266" selection-start-line="266" selection-end-line="266" />
           <folding>
             <element signature="e#0#48#0" expanded="true" />
           </folding>
@@ -471,12 +451,19 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="322">
-          <caret line="104" column="89" lean-forward="true" selection-start-line="104" selection-start-column="89" selection-end-line="104" selection-end-column="89" />
+        <state relative-caret-position="477">
+          <caret line="132" column="26" selection-start-line="132" selection-start-column="26" selection-end-line="132" selection-end-column="26" />
           <folding>
             <element signature="e#0#48#0" expanded="true" />
-            <marker date="1585713753696" expanded="true" signature="5292:5340" ph="..." />
+            <marker date="1585760855416" expanded="true" signature="5292:5340" ph="..." />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pythonsim/SimClasses.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="657">
+          <caret line="136" column="4" selection-start-line="136" selection-start-column="4" selection-end-line="136" selection-end-column="4" />
         </state>
       </provider>
     </entry>

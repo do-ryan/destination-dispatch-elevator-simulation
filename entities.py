@@ -64,7 +64,8 @@ class ElevatorCar(SimClasses.Resource):
             self.outer.status = 2
             num_passengers = 0
             directions_requested = np.nonzero(self.outer.requests[self.outer.floor])[0].tolist()
-            num_to_pick_up = len([p for p in self.outer.floor_queues[self.outer.floor].ThisQueue if p.direction in directions_requested])
+            num_to_pick_up = len(
+                [p for p in self.outer.floor_queues[self.outer.floor].ThisQueue if p.direction in directions_requested])
             while num_passengers < num_to_pick_up and self.outer.Busy < self.outer.NumberOfUnits:
                 if self.outer.requests[self.outer.floor,
                                        self.outer.floor_queues[self.outer.floor].ThisQueue[0].direction]:
@@ -78,8 +79,10 @@ class ElevatorCar(SimClasses.Resource):
                     self.outer.WaitingTimes.Record(SimClasses.Clock - next_passenger.CreateTime)
                     num_passengers += 1
                 else:
-                    # if the car does not have a request equal to first person's intended direction, put him to back of line
-                    self.outer.floor_queues[self.outer.floor].ThisQueue.append(self.outer.floor_queues[self.outer.floor].Remove())
+                    # if the car does not have a request equal to first person's intended
+                    # direction, put him to back of line
+                    self.outer.floor_queues[self.outer.floor].ThisQueue.append(
+                        self.outer.floor_queues[self.outer.floor].Remove())
 
             self.outer.requests[self.outer.floor, 0] = 0
             self.outer.requests[self.outer.floor, 1] = 0
@@ -260,7 +263,6 @@ class ElevatorCar(SimClasses.Resource):
                         self.Calendar.Schedule(self.MoveEvent(destination_floor=int(next_destination),
                                                               EventTime=0,
                                                               outer=self))
-
 
 
 class Passenger(SimClasses.Entity):

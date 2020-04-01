@@ -117,7 +117,7 @@ class EventCalendar():
         # Add EventNotice in EventTime order
         if len(self.ThisCalendar) == 0:  #no events in calendar
             self.ThisCalendar.append(addedEvent)
-        elif self.ThisCalendar[-1].EventTime <= addedEvent.EventTime:
+        elif self.ThisCalendar[-1].EventTime <= addedEvent.EventTime:  # this needs to be made as a stack for equal time
             self.ThisCalendar.append(addedEvent)
         else:
             for rep in range(0,len(self.ThisCalendar),1):
@@ -133,7 +133,8 @@ class EventCalendar():
     def N(self):
         # Return current number of events on the event calendar
         return len(self.ThisCalendar)
-    
+
+
 class FIFOQueue():
     # This is a generic FIFO Queue object that also keeps track
     # of statistics on the number in the queue (WIP)
@@ -165,7 +166,8 @@ class FIFOQueue():
     def Mean(self):
         # Return the average number in queue up to the current time
         return self.WIP.Mean()
-        
+
+
 class Resource():
     # This is a generic Resource object that also keeps track of statistics
     # on number of busy resources
