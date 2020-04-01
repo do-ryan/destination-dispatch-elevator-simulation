@@ -227,7 +227,6 @@ class ElevatorCar(SimClasses.Resource):
                         self.direction = None
                         self.next_action()
                     else:
-                        self.status = 1
                         self.Calendar.Schedule(self.MoveEvent(destination_floor=int(next_destination),
                                                               EventTime=0,
                                                               outer=self))
@@ -259,7 +258,6 @@ class ElevatorCar(SimClasses.Resource):
                         self.direction = None
                         self.next_action()
                     else:
-                        self.status = 1
                         self.Calendar.Schedule(self.MoveEvent(destination_floor=int(next_destination),
                                                               EventTime=0,
                                                               outer=self))
@@ -267,12 +265,10 @@ class ElevatorCar(SimClasses.Resource):
 
 class Passenger(SimClasses.Entity):
     def __init__(self,
-                 num_floors: int,
-                 stream=1):
+                 source_floor: int,
+                 destination_floor: int,
+                 ):
         super().__init__()
-        self.source_floor = math.floor(SimRNG.Uniform(0, num_floors, stream))
-        while True:
-            self.destination_floor = math.floor(SimRNG.Uniform(0, num_floors, stream))
-            if self.destination_floor != self.source_floor:
-                break
+        self.source_floor = source_floor
+        self.destination_floor = destination_floor
         self.direction = int(self.destination_floor > self.source_floor)
