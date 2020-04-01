@@ -96,13 +96,14 @@ class Replication:
                             < abs(request_floor - (assigned_car.next_floor or assigned_car.floor)):
                         assigned_car = car
                     # if this car's suitability is tied with best so far, use proximity as tie breaker
+                    # if proximities tie, first index wins.
 
             assert assigned_car is not None
             assigned_car.requests[request_floor, int(self.new_passenger.direction)] = 1
 
             if assigned_car.status == 0:
+                assigned_car.status = 3  # in decision process status. must not keep as 0
                 assigned_car.next_action()
-                # must guarantee that the car does not already have another action
 
     class PassengerArrivalEvent(FunctionalEventNotice):
         def event(self):
@@ -143,7 +144,7 @@ class Replication:
             SimClasses.Clock = NextEvent.EventTime  # advance clock to start of next event
             NextEvent.event()
             print(NextEvent, SimClasses.Clock)
-            pp.pprint([(e, e.EventTime, e.outer) for e in self.Calendar.ThisCalendar])
+            # pp.pprint([(e, e.EventTime, e.outer) for e in self.Calendar.ThisCalendar])
             print([(i, p.CreateTime, p.destination_floor)
                    for i, q in enumerate(self.floor_queues) for p in q.ThisQueue])
             print([f"{car.dest_passenger_map} floor: {car.floor} next floor: {car.next_floor} status: {car.status} direction: {car.direction}" for car in self.cars])
