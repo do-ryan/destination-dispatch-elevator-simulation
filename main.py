@@ -1,11 +1,17 @@
-from custom_library import FunctionalEventNotice
-from entities import ElevatorCar, Passenger
+import pprint
+import math
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from custom_library import FunctionalEventNotice, DTStatPlus, FIFOQueuePlus
+from traditional_elevator import ElevatorCar, Passenger
 
 import pythonsim.SimFunctions as SimFunctions
 import pythonsim.SimRNG as SimRNG
 import pythonsim.SimClasses as SimClasses
-import numpy as np
-import pprint
+
+import seaborn as sns
+sns.set()
 
 pp = pprint.PrettyPrinter()
 
@@ -20,8 +26,10 @@ class Replication:
                  run_length=120.0,
                  warm_up=0,
                  num_floors=12,
+                 pop_per_floor=100,
                  num_cars=2,
-                 mean_passenger_interarrival=5
+                 mean_passenger_interarrival=0.2,
+                 write_to_csvs=False
                  ):
         """All time units are in minutes.
         """
@@ -29,16 +37,33 @@ class Replication:
         self.warm_up = warm_up
         self.num_floors = num_floors
         self.num_cars = num_cars
-        self.mean_passenger_interarrival = mean_passenger_interarrival
 
-        self.floor_queues = [SimClasses.FIFOQueue() for _ in range(0, self.num_floors)]
+        self.mean_passenger_interarrival = mean_passenger_interarrival  # for stationary option
+        self.pop_per_floor = pop_per_floor
+
+        # daily patterns for non-stationary. Values are % of building population per 5 minutes, by hour starting 12AM
+        self.upbound_arrival_rate = np.array(
+            [0, 0, 0, 0, 0, 0, 0, 0, 8, 0.125, 0.125, 0.125, 2.75, 5.5, 0.125, 0.125, 0.125, 0.125, 0, 0, 0, 0, 0, 0])
+        self.downbound_arrival_rate = np.array(
+            [0, 0, 0, 0, 0, 0, 0, 0, 0.125, 0.125, 0.125, 0.125, 5.5, 2.75, 0.125, 0.125, 0.125, 8, 0, 0, 0, 0, 0, 0])
+        self.crossfloor_arrival_rate = \
+            np.array([0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0])
+
+        self.write_to_csvs = write_to_csvs
+        if self.write_to_csvs:
+            figure_dir = '/Users/ryando/Dropbox/MEng/MIE1613/Project/figures/data'
+        else:
+            figure_dir = None
+
+        self.floor_queues = [FIFOQueuePlus(id=i, figure_dir=figure_dir)for i, _ in enumerate(range(0, self.num_floors))]
 
         self.Calendar = SimClasses.EventCalendar()
-        self.WaitingTimes = SimClasses.DTStat()
-        self.TimesInSystem = SimClasses.DTStat()
+        self.WaitingTimes = DTStatPlus()
+        self.TimesInSystem = DTStatPlus()
         self.CTStats = []
         self.DTStats = [self.WaitingTimes, self.TimesInSystem]
         self.TheQueues = [] + self.floor_queues
+        self.AllArrivalTimes = []
 
         self.cars = [ElevatorCar(outer=self) for _ in range(0, self.num_cars)]
 
@@ -106,16 +131,72 @@ class Replication:
                 assigned_car.next_action()
 
     class PassengerArrivalEvent(FunctionalEventNotice):
-        def event(self):
-            new_passenger = Passenger(self.outer.num_floors, stream=s)
-            self.outer.floor_queues[new_passenger.source_floor].Add(new_passenger)
+        """Simple uniformly distributed source and destination floor, stationary poisson."""
 
-            # self.assign_request(new_passenger)
+        def event(self):
+            source = math.floor(SimRNG.Uniform(0, self.outer.num_floors, s))
+            while True:
+                destination = math.floor(SimRNG.Uniform(0, self.outer.num_floors, s))
+                if destination != source:
+                    break
+            new_passenger = Passenger(source_floor=source, destination_floor=destination)
+            self.outer.floor_queues[new_passenger.source_floor].Add(new_passenger)
+            self.outer.AllArrivalTimes.append(SimClasses.Clock)
+
             self.outer.Calendar.Schedule(
                 self.outer.PassengerArrivalEvent(
-                    EventTime=SimRNG.Expon(
-                        self.outer.mean_passenger_interarrival,
-                        1), outer=self.outer))
+                    EventTime=SimRNG.Expon(self.outer.mean_passenger_interarrival, 1),
+                    outer=self.outer))
+            self.outer.Calendar.Schedule(self.outer.AssignRequestEvent(EventTime=0,
+                                                                       outer=self.outer,
+                                                                       new_passenger=new_passenger))
+
+    class PassengerNonStationaryArrivalEvent(FunctionalEventNotice):
+        """Non-stationary poisson arrival process based on daily patterns"""
+
+        def __init__(self, arrival_rates: np.array, arrival_mode: int, *args, **kwargs):
+            """
+            Args:
+               - arrival_rates - Must be a 24 length 1D array representing hourly rate for each hour
+               - arrival_mode - 0 for ground-floor up-bound, 1 for random floor down to ground, 2 for cross-floor
+            """
+            super().__init__(*args, **kwargs)
+            self.arrival_rates = arrival_rates
+            self.arrival_mode = arrival_mode
+            assert arrival_mode in [0, 1, 2]
+
+        def nspp(self):
+            max_rate = np.max(self.arrival_rates)
+            possible_arrival = SimClasses.Clock + SimRNG.Expon(1 / (max_rate / 60), s)
+            while SimRNG.Uniform(0, 1, 1) \
+                    >= self.arrival_rates[int(possible_arrival / 60 % 24)] / max_rate:
+                possible_arrival += SimRNG.Expon(1 / (max_rate / 60), s)
+            return possible_arrival - SimClasses.Clock
+
+        def event(self):
+            # set source, destination of new passenger
+            if self.arrival_mode == 0:
+                source = 0
+                destination = math.floor(SimRNG.Uniform(1, self.outer.num_floors, s))
+            elif self.arrival_mode == 1:
+                source = math.floor(SimRNG.Uniform(1, self.outer.num_floors, s))
+                destination = 0
+            elif self.arrival_mode == 2:
+                source = math.floor(SimRNG.Uniform(1, self.outer.num_floors, s))
+                while True:
+                    destination = math.floor(SimRNG.Uniform(1, self.outer.num_floors, s))
+                    if destination != source:
+                        break
+            new_passenger = Passenger(source_floor=source, destination_floor=destination)
+            self.outer.floor_queues[new_passenger.source_floor].Add(new_passenger)
+            self.outer.AllArrivalTimes.append(SimClasses.Clock)
+
+            self.outer.Calendar.Schedule(
+                self.outer.PassengerNonStationaryArrivalEvent(
+                    arrival_rates=self.arrival_rates,
+                    arrival_mode=self.arrival_mode,
+                    EventTime=self.nspp(),
+                    outer=self.outer))
             self.outer.Calendar.Schedule(self.outer.AssignRequestEvent(EventTime=0,
                                                                        outer=self.outer,
                                                                        new_passenger=new_passenger))
@@ -129,7 +210,19 @@ class Replication:
             pass
 
     def main(self):
-        self.Calendar.Schedule(self.PassengerArrivalEvent(EventTime=0, outer=self))
+        BuildingPopulation = self.pop_per_floor * self.num_floors
+        self.Calendar.Schedule(self.PassengerNonStationaryArrivalEvent(arrival_rates=self.upbound_arrival_rate / 100 * BuildingPopulation * 12,
+                                                                       arrival_mode=0,
+                                                                       EventTime=0,
+                                                                       outer=self))
+        self.Calendar.Schedule(self.PassengerNonStationaryArrivalEvent(arrival_rates=self.downbound_arrival_rate / 100 * BuildingPopulation * 12,
+                                                                       arrival_mode=1,
+                                                                       EventTime=0,
+                                                                       outer=self))
+        self.Calendar.Schedule(self.PassengerNonStationaryArrivalEvent(arrival_rates=self.crossfloor_arrival_rate / 100 * BuildingPopulation * 12,
+                                                                       arrival_mode=2,
+                                                                       EventTime=0,
+                                                                       outer=self))
         self.Calendar.Schedule(self.ClearItEvent(EventTime=0, outer=self))
         # self.Calendar.Schedule(self.cars[0].PickupEvent(EventTime=50, outer=self.cars[0]))  # test
         # self.Calendar.Schedule(self.cars[0].MoveEvent(EventTime=60, outer=self.cars[0], destination_floor=6))  # test
@@ -144,17 +237,46 @@ class Replication:
             SimClasses.Clock = NextEvent.EventTime  # advance clock to start of next event
             NextEvent.event()
 
-            print(NextEvent, SimClasses.Clock)
+            # ### TRACE ######
+            print(f"Executed event: {NextEvent} Current time: {SimClasses.Clock}, Post-event state below")
             # pp.pprint([(e, e.EventTime, e.outer) for e in self.Calendar.ThisCalendar])
-            print([(i, p.destination_floor)
-                   for i, q in enumerate(self.floor_queues) for p in q.ThisQueue])
-            for car in self.cars:
-                print(f"{[len(floor) for floor in car.dest_passenger_map]} floor: {car.floor} "
-                      f"next floor: {car.next_floor} status: {car.status} direction: {car.direction}")
-            print([car.requests for car in self.cars])
-            # trace
+            # print(
+            #     "Passengers waiting (source floor, destination floor)", [
+            #         (i, p.destination_floor) for i, q in enumerate(
+            #             self.floor_queues) for p in q.ThisQueue])
+            # for i, car in enumerate(self.cars):
+            #     print(f"Car {i+1} - onboard:{[len(floor) for floor in car.dest_passenger_map]} floor: {car.floor} "
+            #           f"next floor: {car.next_floor} status: {car.status} direction: {car.direction}")
+            # print([car.requests for car in self.cars])
+            # ################
 
             NextEvent = self.Calendar.Remove()
+
+        print(f"Mean time in system: {self.TimesInSystem.Mean()} Mean waiting time: {self.WaitingTimes.Mean()}")
+
+        arrivals_in_hours = np.array(self.AllArrivalTimes)/60
+        sns.lineplot(arrivals_in_hours, list(range(1, len(self.AllArrivalTimes) + 1)))
+        # plot cumulative arrivals
+        plt.xlabel("Time (24H)")
+        plt.ylabel("Cumulative passenger arrivals")
+        plt.xticks(range(math.floor(min(arrivals_in_hours)), math.ceil(max(arrivals_in_hours))+1))
+        plt.show()
+
+        sns.distplot(self.TimesInSystem.Observations)  # plot histogram of times in system
+        plt.xlabel("Time (minutes)")
+        plt.show()
+
+        sns.distplot(self.WaitingTimes.Observations)
+        plt.xlabel("Time (minutes)")
+        plt.show()
+
+        if self.write_to_csvs:
+            for queue in self.floor_queues:
+                df = pd.read_csv(f"{queue.figure_dir}/queue{queue.id}_lengths.csv", names=['time', 'count'])
+                sns.lineplot(x='time', y='count', label=f'floor {queue.id}', data=df)
+            plt.title('Floor Queues over Time')
+            plt.legend()
+            plt.show()
 
     @classmethod
     def CI_95(cls, data):
@@ -177,6 +299,6 @@ class Experiment:
         pass
 
 
-r0 = Replication(run_length=120, mean_passenger_interarrival=0.15, num_cars=3)
+r0 = Replication(run_length=60*24, num_floors=5, num_cars=2, write_to_csvs=True)
 r0()
 pass
