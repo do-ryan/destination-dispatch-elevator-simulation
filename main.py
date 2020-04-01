@@ -143,13 +143,16 @@ class Replication:
         while not isinstance(NextEvent, self.EndSimulationEvent):
             SimClasses.Clock = NextEvent.EventTime  # advance clock to start of next event
             NextEvent.event()
+
             print(NextEvent, SimClasses.Clock)
             # pp.pprint([(e, e.EventTime, e.outer) for e in self.Calendar.ThisCalendar])
             print([(i, p.CreateTime, p.destination_floor)
                    for i, q in enumerate(self.floor_queues) for p in q.ThisQueue])
-            print([f"{car.dest_passenger_map} floor: {car.floor} next floor: {car.next_floor} status: {car.status} direction: {car.direction}" for car in self.cars])
+            for car in self.cars:
+                print(f"{[len(floor) for floor in car.dest_passenger_map]} floor: {car.floor} next floor: {car.next_floor} status: {car.status} direction: {car.direction}")
             print([car.requests for car in self.cars])
             # trace
+            
             NextEvent = self.Calendar.Remove()
 
     @classmethod

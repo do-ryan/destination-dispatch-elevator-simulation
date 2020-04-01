@@ -12,7 +12,7 @@ class ElevatorCar(SimClasses.Resource):
                  outer,  # must be Replication class
 
                  initial_floor=0,
-                 capacity=2,
+                 capacity=20,
                  door_move_time=0.0417,  # 2.5 seconds
                  passenger_move_time=0.0167,  # 1 second
                  acceleration=1.0,  # m/s^2
@@ -224,7 +224,7 @@ class ElevatorCar(SimClasses.Resource):
                         self.direction = None
                         self.next_action()
                     else:
-                        self.outer.status = 1
+                        self.status = 1
                         self.Calendar.Schedule(self.MoveEvent(destination_floor=int(next_destination),
                                                               EventTime=0,
                                                               outer=self))
@@ -256,7 +256,7 @@ class ElevatorCar(SimClasses.Resource):
                         self.direction = None
                         self.next_action()
                     else:
-                        self.outer.status = 1
+                        self.status = 1
                         self.Calendar.Schedule(self.MoveEvent(destination_floor=int(next_destination),
                                                               EventTime=0,
                                                               outer=self))
