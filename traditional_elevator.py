@@ -1,16 +1,13 @@
 from custom_library import FunctionalEventNotice
 
 import pythonsim.SimClasses as SimClasses
-import pythonsim.SimRNG as SimRNG
 import numpy as np
-import math
 import itertools
 
 
-class ElevatorCar(SimClasses.Resource):
+class ElevatorCarTraditional(SimClasses.Resource):
     def __init__(self,
-                 outer,  # must be Replication class
-
+                 outer, # must be ReplicationTraditional class
                  initial_floor=0,
                  capacity=20,
                  door_move_time=0.0417,  # 2.5 seconds
@@ -59,18 +56,17 @@ class ElevatorCar(SimClasses.Resource):
 
     class PickupEvent(FunctionalEventNotice):
         def event(self):
-            """Pick-up as many passengers as possible from current floor, update self resource, add waiting time data,
-            and return amount of time spent on floor."""
+            """Pick-up as many passengers as possible from current floor, update self resource, add waiting time data."""
             self.outer.status = 2
             num_passengers = 0
-            directions_requested = np.nonzero(self.outer.requests[self.outer.floor])[0].tolist()
+            directions_requested = set(np.nonzero(self.outer.requests[self.outer.floor])[0].tolist())
             num_to_pick_up = len(
                 [p for p in self.outer.floor_queues[self.outer.floor].ThisQueue if p.direction in directions_requested])
             while num_passengers < num_to_pick_up and self.outer.Busy < self.outer.NumberOfUnits:
-                if self.outer.requests[self.outer.floor,
-                                       self.outer.floor_queues[self.outer.floor].ThisQueue[0].direction]:
+                next_passenger = self.outer.floor_queues[self.outer.floor].Remove()
+                if self.outer.requests[self.outer.floor, next_passenger.direction]:
                     # if this car has a request equal to the first person in queue's intended direction
-                    next_passenger = self.outer.floor_queues[self.outer.floor].Remove()
+
                     assert isinstance(next_passenger, Passenger)
 
                     self.outer.Seize(1)
@@ -81,8 +77,7 @@ class ElevatorCar(SimClasses.Resource):
                 else:
                     # if the car does not have a request equal to first person's intended
                     # direction, put him to back of line
-                    self.outer.floor_queues[self.outer.floor].ThisQueue.append(
-                        self.outer.floor_queues[self.outer.floor].Remove())
+                    self.outer.floor_queues[self.outer.floor].ThisQueue.append(next_passenger)
 
             self.outer.requests[self.outer.floor, 0] = 0
             self.outer.requests[self.outer.floor, 1] = 0
@@ -93,12 +88,16 @@ class ElevatorCar(SimClasses.Resource):
                                                                    outer=self.outer))
 
             for passenger in self.outer.floor_queues[self.outer.floor].ThisQueue:
+                # Guaranteed O(2) per pickup.
                 if passenger.direction in directions_requested:
+                    directions_requested -= {passenger.direction}
                     # for all passengers requests that were allocated to this car that couldn't get on,
                     # re-allocate car to those requests
                     self.outer.Calendar.Schedule(self.outer.outer.AssignRequestEvent(new_passenger=passenger,
                                                                                      EventTime=0,
                                                                                      outer=self.outer.outer))
+                if len(directions_requested) == 0:
+                    break
 
     class PickupEndEvent(FunctionalEventNotice):
         def event(self):
@@ -160,9 +159,10 @@ class ElevatorCar(SimClasses.Resource):
     def next_action(self):
         """Triggered after moving, or done a transfer. Schedules event representing next action."""
         if np.sum(self.requests) == 0 and len(
-                [queue for queue in itertools.chain.from_iterable(self.dest_passenger_map)]) == 0:
+                [passenger for passenger in itertools.chain.from_iterable(self.dest_passenger_map)]) == 0:
             # if no requests nor drop-offs, go idle. this is the only case where the car should go idle.
-            # if the car goes idle while it has a potential task, a new task may trigger a state of multiple actions.
+            # if the car goes idle while it has a potential task, a new task may trigger a state of multiple actions,
+            # because new passengers look for idle cars.
             self.status = 0
             self.next_floor = None
             self.direction = None
