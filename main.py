@@ -11,6 +11,7 @@ import pythonsim.SimRNG as SimRNG
 import pythonsim.SimClasses as SimClasses
 
 import seaborn as sns
+import shutil
 sns.set()
 
 pp = pprint.PrettyPrinter()
@@ -52,6 +53,7 @@ class Replication:
         self.write_to_csvs = write_to_csvs
         if self.write_to_csvs:
             figure_dir = '/Users/ryando/Dropbox/MEng/MIE1613/Project/figures/data'
+            shutil.rmtree(figure_dir)
         else:
             figure_dir = None
 
@@ -262,19 +264,23 @@ class Replication:
         plt.xticks(range(math.floor(min(arrivals_in_hours)), math.ceil(max(arrivals_in_hours))+1))
         plt.show()
 
-        sns.distplot(self.TimesInSystem.Observations)  # plot histogram of times in system
+        sns.distplot(self.TimesInSystem.Observations, norm_hist=True)  # plot histogram of times in system
+
         plt.xlabel("Time (minutes)")
         plt.show()
 
-        sns.distplot(self.WaitingTimes.Observations)
+        sns.distplot(self.WaitingTimes.Observations, norm_hist=True)
         plt.xlabel("Time (minutes)")
         plt.show()
 
         if self.write_to_csvs:
             for queue in self.floor_queues:
                 df = pd.read_csv(f"{queue.figure_dir}/queue{queue.id}_lengths.csv", names=['time', 'count'])
+                df.time = df.time / 60
                 sns.lineplot(x='time', y='count', label=f'floor {queue.id}', data=df)
-            plt.title('Floor Queues over Time')
+            plt.xticks(range(math.floor(min(df.time)), math.ceil(max(df.time)) + 1))
+            plt.xlabel("Time (24H)")
+            plt.title('Number of Patrons Queuing for Elevators by Floor Over Time')
             plt.legend()
             plt.show()
 

@@ -33,13 +33,13 @@
         <counts>
           <entry key="Python Console" value="1156" />
           <entry key="dummy" value="67" />
-          <entry key="py" value="25811" />
+          <entry key="py" value="25933" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="PLAIN_TEXT" value="67" />
-          <entry key="Python" value="26967" />
+          <entry key="Python" value="27089" />
         </counts>
       </usages-collector>
     </session>
@@ -49,14 +49,14 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="103">
-              <caret line="45" column="19" selection-start-line="45" selection-start-column="19" selection-end-line="47" selection-end-column="118" />
+            <state relative-caret-position="313">
+              <caret line="271" column="67" selection-start-line="271" selection-start-column="67" selection-end-line="271" selection-end-column="67" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
-                <marker date="1585782471055" expanded="true" signature="12482:13614" ph="..." />
+                <marker date="1585835890094" expanded="true" signature="12534:13896" ph="..." />
               </folding>
             </state>
           </provider>
@@ -85,11 +85,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/traditional_elevator.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-857">
-              <caret line="103" column="24" selection-start-line="103" selection-start-column="24" selection-end-line="103" selection-end-column="24" />
+            <state relative-caret-position="-818">
+              <caret line="181" column="52" lean-forward="true" selection-start-line="181" selection-start-column="52" selection-end-line="181" selection-end-column="52" />
               <folding>
                 <element signature="e#0#48#0" expanded="true" />
               </folding>
@@ -173,9 +173,9 @@
         <option value="$PROJECT_DIR$/entities.py" />
         <option value="$PROJECT_DIR$/pythonsim/SimClasses.py" />
         <option value="$PROJECT_DIR$/../../HW3/hw3_q2.py" />
-        <option value="$PROJECT_DIR$/main.py" />
         <option value="$PROJECT_DIR$/custom_library.py" />
         <option value="$PROJECT_DIR$/traditional_elevator.py" />
+        <option value="$PROJECT_DIR$/main.py" />
       </list>
     </option>
   </component>
@@ -302,7 +302,7 @@
         </line-breakpoint>
         <line-breakpoint suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/main.py</url>
-          <line>21</line>
+          <line>22</line>
           <option name="timeStamp" value="14" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -313,12 +313,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/main.py</url>
-          <line>159</line>
+          <line>161</line>
           <option name="timeStamp" value="72" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/main.py</url>
-          <line>273</line>
+          <line>276</line>
           <option name="timeStamp" value="77" />
         </line-breakpoint>
         <breakpoint enabled="true" type="python-exception">
@@ -467,17 +467,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="103">
-          <caret line="45" column="19" selection-start-line="45" selection-start-column="19" selection-end-line="47" selection-end-column="118" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-            <marker date="1585782471055" expanded="true" signature="12482:13614" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/custom_library.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="748">
@@ -499,10 +488,21 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/traditional_elevator.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-857">
-          <caret line="103" column="24" selection-start-line="103" selection-start-column="24" selection-end-line="103" selection-end-column="24" />
+        <state relative-caret-position="-818">
+          <caret line="181" column="52" lean-forward="true" selection-start-line="181" selection-start-column="52" selection-end-line="181" selection-end-column="52" />
           <folding>
             <element signature="e#0#48#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="313">
+          <caret line="271" column="67" selection-start-line="271" selection-start-column="67" selection-end-line="271" selection-end-column="67" />
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
+            <marker date="1585835890094" expanded="true" signature="12534:13896" ph="..." />
           </folding>
         </state>
       </provider>
