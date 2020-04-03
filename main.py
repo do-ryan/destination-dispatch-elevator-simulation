@@ -236,35 +236,23 @@ class ReplicationTraditional:
         BuildingPopulation = self.pop_per_floor * self.num_floors
         self.Calendar.Schedule(
             self.PassengerNonStationaryArrivalEvent(
-                arrival_rates=self.upbound_arrival_rate /
-                100 *
-                BuildingPopulation *
-                12,
+                arrival_rates=self.upbound_arrival_rate / 100 * BuildingPopulation * 12,
                 arrival_mode=0,
                 EventTime=0,
                 outer=self))
         self.Calendar.Schedule(
             self.PassengerNonStationaryArrivalEvent(
-                arrival_rates=self.downbound_arrival_rate /
-                100 *
-                BuildingPopulation *
-                12,
+                arrival_rates=self.downbound_arrival_rate / 100 * BuildingPopulation * 12,
                 arrival_mode=1,
                 EventTime=0,
                 outer=self))
         self.Calendar.Schedule(
             self.PassengerNonStationaryArrivalEvent(
-                arrival_rates=self.crossfloor_arrival_rate /
-                100 *
-                BuildingPopulation *
-                12,
+                arrival_rates=self.crossfloor_arrival_rate / 100 * BuildingPopulation * 12,
                 arrival_mode=2,
                 EventTime=0,
                 outer=self))
         self.Calendar.Schedule(self.ClearItEvent(EventTime=0, outer=self))
-        # self.Calendar.Schedule(self.cars[0].PickupEvent(EventTime=50, outer=self.cars[0]))  # test
-        # self.Calendar.Schedule(self.cars[0].MoveEvent(EventTime=60, outer=self.cars[0], destination_floor=6))  # test
-        # self.Calendar.Schedule(self.cars[0].DropoffEvent(EventTime=70, outer=self.cars[0]))  # test
         self.Calendar.Schedule(self.EndSimulationEvent(EventTime=self.run_length, outer=self))
 
         NextEvent = self.Calendar.Remove()
@@ -275,24 +263,21 @@ class ReplicationTraditional:
             SimClasses.Clock = NextEvent.EventTime  # advance clock to start of next event
             NextEvent.event()
 
-            # ### TRACE ######
+            ### TRACE ######
             print(f"Executed event: {NextEvent} Current time: {SimClasses.Clock}, Post-event state below")
-            # # pp.pprint([(e, e.EventTime, e.outer) for e in self.Calendar.ThisCalendar])
-            # print(
-            #     "Passengers waiting (source floor, destination floor)", [
-            #         (i, p.destination_floor) for i, q in enumerate(
-            #             self.floor_queues) for p in q.ThisQueue])
-            # for i, car in enumerate(self.cars):
-            #     print(f"Car {i+1} - onboard:{[len(floor) for floor in car.dest_passenger_map]} floor: {car.floor} "
-            #           f"next floor: {car.next_floor} status: {car.status} direction: {car.direction}")
-            # print([car.requests for car in self.cars])
-            # ################
+            # pp.pprint([(e, e.EventTime, e.outer) for e in self.Calendar.ThisCalendar])
+            print(
+                "Passengers waiting (source floor, destination floor)", [
+                    (i, p.destination_floor) for i, q in enumerate(
+                        self.floor_queues) for p in q.ThisQueue])
+            for i, car in enumerate(self.cars):
+                print(f"Car {i+1} - onboard:{[len(floor) for floor in car.dest_passenger_map]} floor: {car.floor} "
+                      f"next floor: {car.next_floor} status: {car.status} direction: {car.direction}")
+            print([car.requests for car in self.cars])
+            ################
 
             NextEvent = self.Calendar.Remove()
 
-        self.callback()
-
-    def callback(self):
         print(f"Mean time in system: {self.TimesInSystem.Mean()} Mean waiting time: {self.WaitingTimes.Mean()}")
 
         arrivals_in_hours = np.array(self.AllArrivalTimes) / 60
@@ -336,28 +321,92 @@ class ReplicationTraditional:
 class ReplicationDestDispatch(ReplicationTraditional):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.source_destination_queue_matrix = np.array([[FIFOQueuePlus(id=(i,j), figure_dir=self.figure_dir)
+                                                          for i, _ in enumerate(range(0, self.num_floors))]
+                                                         for j, _ in enumerate(range(0, self.num_floors))])
+        self.source_destination_matrix = np.frompyfunc(
+            lambda x: len(
+                x.ThisQueue), 1, 1)(
+            self.source_destination_queue_matrix)
         self.cars = [ElevatorCarDestDispatch(outer=self) for _ in range(0, self.num_cars)]
-        self.source_destination_queue_matrix = np.array([[FIFOQueuePlus(id=(i, j), figure_dir=self.figure_dir)
-                                                        for i, _ in enumerate(range(0, self.num_floors))]
-                                                        for j, _ in enumerate(range(0, self.num_floors))])
-        self.source_destination_matrix = np.frompyfunc(lambda x: len(x.ThisQueue), 1, 1)(self.source_destination_queue_matrix)
 
     class PassengerNonStationaryArrivalEvent(ReplicationTraditional.PassengerNonStationaryArrivalEvent):
         def enqueue_passenger(self, passenger: Passenger):
             self.outer.source_destination_queue_matrix[passenger.source_floor, passenger.destination_floor].Add(
                 passenger)
 
-    class AssignRequestEvent(ReplicationTraditional.AssignRequestEvent):
+    class AssignRequestEvent(FunctionalEventNotice):
+        def __init__(self, new_passenger: Passenger, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.new_passenger = new_passenger
+
         def event(self):
             # trigger an action from the idle vehicle. otherwise it will stay idle indefinitely
-            self.outer.source_destination_matrix[self.new_passenger.source_floor, self.new_passenger.destination_floor] += 1
+            car_incoming = False
             for car in self.outer.cars:
-                if car.status == 0:
-                    car.status = 3
-                    car.next_action()
-                    break
+                ultimate_direction = np.nonzero(np.sum(car.requests, axis=0))[0].tolist()
+                assert len(ultimate_direction) <= 1
+                if len(ultimate_direction) > 0:
+                    ultimate_direction = ultimate_direction[0]
+                if car.destination_dispatched == self.new_passenger.destination_floor \
+                    and ultimate_direction == self.new_passenger.direction:
+                    car.requests[self.new_passenger.source_floor, self.new_passenger.direction] += 1
+                    car_incoming = True
 
-    def callback(self):
+            if not car_incoming:
+                self.outer.source_destination_matrix[self.new_passenger.source_floor,
+                                                     self.new_passenger.destination_floor] += 1
+                for car in self.outer.cars:
+                    if car.status == 0:
+                        car.status = 3
+                        car.next_action()
+                        break
+
+    def main(self):
+        BuildingPopulation = self.pop_per_floor * self.num_floors
+        self.Calendar.Schedule(
+            self.PassengerNonStationaryArrivalEvent(
+                arrival_rates=self.upbound_arrival_rate / 100 * BuildingPopulation * 12,
+                arrival_mode=0,
+                EventTime=0,
+                outer=self))
+        self.Calendar.Schedule(
+            self.PassengerNonStationaryArrivalEvent(
+                arrival_rates=self.downbound_arrival_rate / 100 * BuildingPopulation * 12,
+                arrival_mode=1,
+                EventTime=0,
+                outer=self))
+        self.Calendar.Schedule(
+            self.PassengerNonStationaryArrivalEvent(
+                arrival_rates=self.crossfloor_arrival_rate / 100 * BuildingPopulation * 12,
+                arrival_mode=2,
+                EventTime=0,
+                outer=self))
+        self.Calendar.Schedule(self.ClearItEvent(EventTime=0, outer=self))
+        self.Calendar.Schedule(self.EndSimulationEvent(EventTime=self.run_length, outer=self))
+
+        NextEvent = self.Calendar.Remove()
+
+        print(f"waiting passengers: [(source floor, create time, destination floor), ...] "
+              f"car passengers: [{{floor: [passengers]}}, ...] car requests")
+        while not isinstance(NextEvent, self.EndSimulationEvent):
+            SimClasses.Clock = NextEvent.EventTime  # advance clock to start of next event
+            NextEvent.event()
+
+            print(f"Executed event: {NextEvent} Current time: {SimClasses.Clock}, Post-event state below")
+            # ### TRACE ######
+            # pp.pprint([(e, e.EventTime, e.outer) for e in self.Calendar.ThisCalendar])
+            # print("Source destination queue matrix count\n",
+            #       np.frompyfunc(lambda x: len(x.ThisQueue), 1, 1)(self.source_destination_queue_matrix))
+            # print("Source destination matrix\n", self.source_destination_matrix)
+            # for i, car in enumerate(self.cars):
+            #     print(f"Car {i+1} - onboard:{[len(floor) for floor in car.dest_passenger_map]} "
+            #           f"floor: {car.floor} next floor: {car.next_floor} status: {car.status} "
+            #           f"direction: {car.direction} final dest: {car.destination_dispatched}")
+            # pp.pprint([car.requests for car in self.cars])
+            ################
+            NextEvent = self.Calendar.Remove()
+
         print(f"Mean time in system: {self.TimesInSystem.Mean()} Mean waiting time: {self.WaitingTimes.Mean()}")
 
         arrivals_in_hours = np.array(self.AllArrivalTimes) / 60
@@ -369,24 +418,40 @@ class ReplicationDestDispatch(ReplicationTraditional):
         plt.show()
 
         sns.distplot(self.TimesInSystem.Observations, norm_hist=True)  # plot histogram of times in system
-
+        plt.title("Patron Time in System")
         plt.xlabel("Time (minutes)")
         plt.show()
 
         sns.distplot(self.WaitingTimes.Observations, norm_hist=True)
+        plt.title("Patron Waiting Time")
         plt.xlabel("Time (minutes)")
         plt.show()
 
         if self.write_to_csvs:
-            for queue in np.nditer(self.source_destination_queue_matrix):
-                df = pd.read_csv(f"{queue.figure_dir}/queue{queue.id}_lengths.csv", names=['time', 'count'])
-                df.time = df.time / 60
-                sns.lineplot(x='time', y='count', label=f'floor {queue.id}', data=df)
+            curr_floor = 0
+            df = pd.DataFrame(columns=['time', 'count'])
+            for i, queue in enumerate(np.nditer(self.source_destination_queue_matrix, flags=["refs_ok"])):
+                if queue.item().id[0] != queue.item().id[1]:
+                    if i // self.num_floors == curr_floor:
+                        df = pd.concat([df, pd.read_csv(f"{queue.item().figure_dir}/queue{queue.item().id}_lengths.csv",
+                                        names=['time', 'count'])])
+                    else:
+                        df.time = df.time / 60
+                        df = df.astype({'count': 'int64'})
+                        sns.lineplot(x='time', y='count', label=f'(source, destination) floor: {curr_floor}', data=df)
+                        curr_floor = i // self.num_floors
+                        df = pd.read_csv(f"{queue.item().figure_dir}/queue{queue.item().id}_lengths.csv",
+                                         names=['time', 'count'])
+            df.time = df.time / 60
+            df = df.astype({'count': 'int64'})
+            sns.lineplot(x='time', y='count', label=f'(source, destination) floor: {curr_floor}', data=df)
+            # graph queue sizes over time by floor
             plt.xticks(range(math.floor(min(df.time)), math.ceil(max(df.time)) + 1))
             plt.xlabel("Time (24H)")
             plt.title('Number of Patrons Queuing for Elevators by Floor Over Time')
             plt.legend()
             plt.show()
+
 
 class Experiment:
     def __init__(self):
@@ -399,10 +464,10 @@ class Experiment:
         pass
 
 
-r0 = ReplicationTraditional(run_length=60 * 24,
-                            num_floors=5,
-                            num_cars=2,
-                            car_capacity=20,
-                            write_to_csvs=True)
+r0 = ReplicationDestDispatch(run_length=60*24,
+                             num_floors=5,
+                             num_cars=2,
+                             car_capacity=20,
+                             write_to_csvs=True)
 r0()
 pass

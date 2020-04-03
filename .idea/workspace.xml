@@ -21,25 +21,25 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="py" value="33" />
+          <entry key="py" value="34" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Python" value="33" />
+          <entry key="Python" value="34" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="Python Console" value="1156" />
+          <entry key="Python Console" value="1328" />
           <entry key="dummy" value="67" />
-          <entry key="py" value="33054" />
+          <entry key="py" value="34920" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="PLAIN_TEXT" value="67" />
-          <entry key="Python" value="34210" />
+          <entry key="Python" value="36248" />
         </counts>
       </usages-collector>
     </session>
@@ -48,18 +48,28 @@
     <favorites_list name="code" />
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.52678573">
+    <splitter split-orientation="horizontal" split-proportion="0.46754616">
       <split-first>
         <leaf>
           <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/main.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="585">
-                  <caret line="380" column="25" lean-forward="true" selection-start-line="380" selection-start-column="25" selection-end-line="380" selection-end-column="25" />
+                <state relative-caret-position="512">
+                  <caret line="447" column="50" selection-start-line="447" selection-start-column="50" selection-end-line="447" selection-end-column="50" />
                   <folding>
                     <element signature="e#0#13#0" expanded="true" />
-                    <marker date="1585868645271" expanded="true" signature="13154:14520" ph="..." />
+                    <marker date="1585884737824" expanded="true" signature="12616:13982" ph="..." />
+                    <marker date="1585884737824" expanded="true" signature="15277:15286" ph="..." />
                   </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file:///usr/local/lib/python3.7/site-packages/pandas/core/groupby/groupby.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="300">
+                  <caret line="1231" selection-start-line="1231" selection-end-line="1231" />
                 </state>
               </provider>
             </entry>
@@ -67,8 +77,8 @@
           <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/traditional_elevator.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="2571">
-                  <caret line="265" column="6" selection-start-line="265" selection-start-column="6" selection-end-line="265" selection-end-column="6" />
+                <state relative-caret-position="-2961">
+                  <caret line="56" column="45" lean-forward="true" selection-start-line="56" selection-start-column="45" selection-end-line="56" selection-end-column="45" />
                   <folding>
                     <element signature="e#0#48#0" expanded="true" />
                   </folding>
@@ -79,8 +89,8 @@
           <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/pythonsim/SimClasses.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="-1412">
-                  <caret line="88" column="6" selection-start-line="88" selection-start-column="6" selection-end-line="88" selection-end-column="6" />
+                <state relative-caret-position="793">
+                  <caret line="215" column="13" selection-start-line="215" selection-start-column="13" selection-end-line="215" selection-end-column="13" />
                 </state>
               </provider>
             </entry>
@@ -121,26 +131,14 @@
       </split-first>
       <split-second>
         <leaf>
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/main.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="-939">
-                  <caret line="140" column="94" selection-start-line="140" selection-start-column="94" selection-end-line="140" selection-end-column="94" />
-                  <folding>
-                    <element signature="e#0#13#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
           <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/destdispatch_elevator.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="620">
-                  <caret line="49" column="12" selection-start-line="49" selection-start-column="12" selection-end-line="49" selection-end-column="12" />
+                <state relative-caret-position="642">
+                  <caret line="56" column="76" selection-start-line="56" selection-start-column="76" selection-end-line="56" selection-end-column="76" />
                   <folding>
                     <element signature="e#0#48#0" expanded="true" />
-                    <marker date="1585868645247" expanded="true" signature="383:507" ph="..." />
+                    <marker date="1585880984664" expanded="true" signature="383:510" ph="..." />
                   </folding>
                 </state>
               </provider>
@@ -181,8 +179,10 @@
       <find>0, 0, 0, 0, 0, 0, 0, 0, 8, 0.5, 0.5, 0.5, 2.75, 5.5, 0.5, 0.5, 0.5, 0.5, 0, 0, 0, 0, 0, 0])</find>
       <find>,</find>
       <find>0.5</find>
-      <find>ElevatorCar</find>
       <find>0.125</find>
+      <find>ElevatorCar</find>
+      <find>floor_queue</find>
+      <find>nonzer</find>
     </findStrings>
     <replaceStrings>
       <replace>queues</replace>
@@ -190,8 +190,8 @@
       <replace>Calendar</replace>
       <replace>SchedulePlus</replace>
       <replace>0.125</replace>
-      <replace>ElevatorCarTraditional</replace>
       <replace>0.5</replace>
+      <replace>ElevatorCarTraditional</replace>
       <replace>scan_start</replace>
     </replaceStrings>
   </component>
@@ -216,9 +216,10 @@
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="y" value="303" />
-    <option name="width" value="1280" />
-    <option name="height" value="777" />
+    <option name="x" value="-19" />
+    <option name="y" value="23" />
+    <option name="width" value="1920" />
+    <option name="height" value="1057" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -312,7 +313,7 @@
     <editor active="true" />
     <layout>
       <window_info id="Favorites" side_tool="true" />
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.113456465" />
+      <window_info content_ui="combo" id="Project" order="0" weight="0.39577836" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Version Control" show_stripe_button="false" />
       <window_info anchor="bottom" id="Python Console" weight="0.32947367" />
@@ -321,7 +322,7 @@
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
       <window_info active="true" anchor="bottom" x="334" y="1125" width="1280" height="755" id="Run" order="2" type="WINDOWED" visible="true" weight="0.9658031" />
-      <window_info anchor="bottom" x="334" y="1125" width="1280" height="755" id="Debug" order="3" type="WINDOWED" weight="0.7547445" />
+      <window_info anchor="bottom" x="334" y="1125" width="1280" height="755" id="Debug" order="3" type="WINDOWED" visible="true" weight="0.7547445" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -348,8 +349,8 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/main.py</url>
-          <line>290</line>
-          <option name="timeStamp" value="77" />
+          <line>440</line>
+          <option name="timeStamp" value="90" />
         </line-breakpoint>
         <breakpoint enabled="true" type="python-exception">
           <properties notifyOnTerminate="true" exception="builtins.TypeError">
@@ -362,6 +363,12 @@
             <option name="notifyOnTerminate" value="true" />
           </properties>
           <option name="timeStamp" value="29" />
+        </breakpoint>
+        <breakpoint enabled="true" type="python-exception">
+          <properties notifyOnTerminate="true" exception="builtins.AssertionError">
+            <option name="notifyOnTerminate" value="true" />
+          </properties>
+          <option name="timeStamp" value="87" />
         </breakpoint>
       </breakpoints>
       <breakpoints-dialog>
@@ -378,6 +385,26 @@
   </component>
   <component name="debuggerHistoryManager">
     <expressions id="breakpointCondition">
+      <expression>
+        <expression-string>SimClasses.Clock &gt;= 492.9980115645832</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>SimClasses.Clock == 493.0170971745776</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>SimClasses.Clock == 492.9980115645832</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>SimClasses.Clock &gt;= 480.02340151541233</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
       <expression>
         <expression-string>SimClasses.Clock == 14.059572162807008</expression-string>
         <language-id>Python</language-id>
@@ -400,31 +427,6 @@
       </expression>
       <expression>
         <expression-string>SimClasses.Clock == 10.129726414754288</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>SimClasses.Clock == 2.521732034355965</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>self.floor is None</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>SimClasses.Clock &gt;= 14</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>SimClasses.Clock == 14.033094412583793</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>SimClasses.Clock &gt;= 17.219002713281984</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
@@ -497,10 +499,28 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/pythonsim/SimClasses.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="793">
+          <caret line="215" column="13" selection-start-line="215" selection-start-column="13" selection-end-line="215" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/destdispatch_elevator.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="642">
+          <caret line="56" column="76" selection-start-line="56" selection-start-column="76" selection-end-line="56" selection-end-column="76" />
+          <folding>
+            <element signature="e#0#48#0" expanded="true" />
+            <marker date="1585880984664" expanded="true" signature="383:510" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/traditional_elevator.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2571">
-          <caret line="265" column="6" selection-start-line="265" selection-start-column="6" selection-end-line="265" selection-end-column="6" />
+        <state relative-caret-position="-2961">
+          <caret line="56" column="45" lean-forward="true" selection-start-line="56" selection-start-column="45" selection-end-line="56" selection-end-column="45" />
           <folding>
             <element signature="e#0#48#0" expanded="true" />
           </folding>
@@ -519,31 +539,21 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pythonsim/SimClasses.py">
+    <entry file="file:///usr/local/lib/python3.7/site-packages/pandas/core/groupby/groupby.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1412">
-          <caret line="88" column="6" selection-start-line="88" selection-start-column="6" selection-end-line="88" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/destdispatch_elevator.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="620">
-          <caret line="49" column="12" selection-start-line="49" selection-start-column="12" selection-end-line="49" selection-end-column="12" />
-          <folding>
-            <element signature="e#0#48#0" expanded="true" />
-            <marker date="1585868645247" expanded="true" signature="383:507" ph="..." />
-          </folding>
+        <state relative-caret-position="300">
+          <caret line="1231" selection-start-line="1231" selection-end-line="1231" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="585">
-          <caret line="380" column="25" lean-forward="true" selection-start-line="380" selection-start-column="25" selection-end-line="380" selection-end-column="25" />
+        <state relative-caret-position="512">
+          <caret line="447" column="50" selection-start-line="447" selection-start-column="50" selection-end-line="447" selection-end-column="50" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
-            <marker date="1585868645271" expanded="true" signature="13154:14520" ph="..." />
+            <marker date="1585884737824" expanded="true" signature="12616:13982" ph="..." />
+            <marker date="1585884737824" expanded="true" signature="15277:15286" ph="..." />
           </folding>
         </state>
       </provider>

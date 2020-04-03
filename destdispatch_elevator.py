@@ -13,7 +13,7 @@ class ElevatorCarDestDispatch(ElevatorCarTraditional):
         Args:
             - outer: ReplicationDestDispatch
         """
-        super().__init__(outer, args, kwargs)
+        super().__init__(outer, *args, **kwargs)
         self.source_destination_matrix = self.outer.source_destination_matrix
         self.source_destination_queue_matrix = self.outer.source_destination_queue_matrix
         self.destination_dispatched = None  # the destination floor this car is dispatched to
@@ -28,7 +28,9 @@ class ElevatorCarDestDispatch(ElevatorCarTraditional):
             assert len(directions_requested) == 1
             direction_requested = directions_requested[0]
             leftovers = []
-            while self.outer.requests[self.outer.floor, direction_requested] > 0:
+            while self.outer.requests[self.outer.floor, direction_requested] > 0 \
+                    or self.outer.source_destination_matrix[self.outer.floor, self.outer.destination_dispatched] > 0:
+                # while this car still need to pick up allocated tasks or if there are new ones
                 next_passenger = self.outer.source_destination_queue_matrix[self.outer.floor,
                                                                             self.outer.destination_dispatched].Remove()
                 # O(number of queued passengers/ num_floors)
@@ -37,17 +39,22 @@ class ElevatorCarDestDispatch(ElevatorCarTraditional):
                     self.outer.Seize(1)
                     self.outer.dest_passenger_map[next_passenger.destination_floor].append(next_passenger)
                     self.outer.WaitingTimes.Record(SimClasses.Clock - next_passenger.CreateTime)
+                    num_passengers += 1
+
+                    if self.outer.requests[self.outer.floor, direction_requested] == 0:
+                        self.outer.source_destination_matrix[self.outer.floor, self.outer.destination_dispatched] -= 1
                 else:
                     self.outer.Calendar.Schedule(self.outer.outer.AssignRequestEvent(new_passenger=next_passenger,
                                                                                      EventTime=0,
                                                                                      outer=self.outer.outer))
                     leftovers.append(next_passenger)
                     raise Exception('There should not be any outstanding passenger requests once full.')
+                    break
                 self.outer.requests[self.outer.floor, direction_requested] -= 1
 
-            assert len(self.outer.source_destination_queue_matrix[self.outer.floor, self.outer.destination_dispatched])\
-                == self.outer.source_destination_matrix[self.outer.floor, self.outer.destination_dispatched]
-            # all of the reserved passengers should either be onboard or indicated as left over.
+            self.outer.requests[self.outer.floor, direction_requested] = 0
+            # must be 0 here. if there were leftover requests, there are now in leftovers. might have been negative
+            # if there were rejects (more waiting passengers than expected).
 
             self.outer.source_destination_queue_matrix[self.outer.floor,
                                                        self.outer.destination_dispatched].ThisQueue += leftovers
@@ -80,9 +87,10 @@ class ElevatorCarDestDispatch(ElevatorCarTraditional):
                     continue
 
                 destination_earliest_arrival = math.inf
-                for relevant_queue in self.source_destination_queue_matrix[:, destination_direction[0]]:
+                for target_destination_queue in self.source_destination_queue_matrix[:, destination_direction[0]]:
                     # O(num floors)
-                    destination_earliest_arrival = min(destination_earliest_arrival, relevant_queue[0].CreateTime)
+                    if target_destination_queue.ThisQueue:
+                        destination_earliest_arrival = min(destination_earliest_arrival, target_destination_queue.ThisQueue[0].CreateTime)
                 # Find earliest arrival time out of all waiting to go to this destination in this direction
 
                 if sum > largest_count:
@@ -102,12 +110,12 @@ class ElevatorCarDestDispatch(ElevatorCarTraditional):
                 self.destination_dispatched = chosen_destination_direction[0]
                 if chosen_destination_direction[1] == 1:
                     source_floors = np.nonzero(self.source_destination_matrix[
-                                            0:chosen_destination_direction[0]+1],
-                                            chosen_destination_direction[0])[0]
+                                            0:chosen_destination_direction[0]+1,
+                                            chosen_destination_direction[0]])[0]
                 else:
                     source_floors = np.nonzero(self.source_destination_matrix[
                                                chosen_destination_direction[0]::,
-                                               chosen_destination_direction[0]])[0]
+                                               chosen_destination_direction[0]])[0] + chosen_destination_direction[0]
                 for floor in source_floors:
                     num_more_to_pickup = min((self.NumberOfUnits - self.Busy) - np.sum(self.requests),
                                              self.source_destination_matrix[floor, chosen_destination_direction[0]])
