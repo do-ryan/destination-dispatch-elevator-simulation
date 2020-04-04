@@ -3,9 +3,9 @@ import math
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from custom_library import FunctionalEventNotice, DTStatPlus, FIFOQueuePlus
-from traditional_elevator import ElevatorCarTraditional, Passenger
-from destdispatch_elevator import ElevatorCarDestDispatch
+from custom_library import FunctionalEventNotice, DTStatPlus, FIFOQueuePlus, CI_95
+from elevator_car_traditional import ElevatorCarTraditional, Passenger
+from elevator_car_dest_dispatch import ElevatorCarDestDispatch
 
 import pythonsim.SimFunctions as SimFunctions
 import pythonsim.SimRNG as SimRNG
@@ -72,6 +72,7 @@ class ReplicationTraditional:
         self.Calendar = SimClasses.EventCalendar()
         self.WaitingTimes = DTStatPlus()
         self.TimesInSystem = DTStatPlus()
+        self.TravelTimes = DTStatPlus()
         self.CTStats = []
         self.DTStats = [self.WaitingTimes, self.TimesInSystem]
         self.TheQueues = [] + self.floor_queues
@@ -232,6 +233,57 @@ class ReplicationTraditional:
         def event(self):
             pass
 
+    def print_state(self):
+        ### TRACE ######
+        print(f"Executed event: {self.NextEvent} Current time: {SimClasses.Clock}, Post-event state below")
+        # pp.pprint([(e, e.EventTime, e.outer) for e in self.Calendar.ThisCalendar])
+        print(
+            "Passengers waiting (source floor, destination floor)", [
+                (i, p.destination_floor) for i, q in enumerate(
+                    self.floor_queues) for p in q.ThisQueue])
+        for i, car in enumerate(self.cars):
+            print(f"Car {i+1} - onboard:{[len(floor) for floor in car.dest_passenger_map]} floor: {car.floor} "
+                  f"next floor: {car.next_floor} status: {car.status} direction: {car.direction}")
+        print([car.requests for car in self.cars])
+        ################
+
+    def callback(self):
+        print(f"Mean time in system: {self.TimesInSystem.Mean()} Mean waiting time: {self.WaitingTimes.Mean()}")
+
+        arrivals_in_hours = np.array(self.AllArrivalTimes) / 60
+        sns.lineplot(arrivals_in_hours, list(range(1, len(self.AllArrivalTimes) + 1)))
+        # plot cumulative arrivals
+        plt.xlabel("Time (24H)")
+        plt.ylabel("Cumulative passenger arrivals")
+        plt.xticks(range(math.floor(min(arrivals_in_hours)), math.ceil(max(arrivals_in_hours)) + 1))
+        plt.show()
+
+        sns.distplot(self.TimesInSystem.Observations)  # plot histogram of times in system
+        plt.title("Patron Time in System")
+        plt.xlabel("Time (minutes)")
+        plt.show()
+
+        sns.distplot(self.WaitingTimes.Observations)
+        plt.title("Patron Waiting Time")
+        plt.xlabel("Time (minutes)")
+        plt.show()
+
+        sns.distplot(self.TravelTimes.Observations)
+        plt.title("Patron Travel Time")
+        plt.xlabel("Time (minutes)")
+        plt.show()
+
+        if self.write_to_csvs:
+            for queue in self.floor_queues:
+                df = pd.read_csv(f"{queue.figure_dir}/queue{queue.id}_lengths.csv", names=['time', 'count'])
+                df.time = df.time / 60
+                sns.lineplot(x='time', y='count', label=f'floor {queue.id}', data=df)
+            plt.xticks(range(math.floor(min(df.time)), math.ceil(max(df.time)) + 1))
+            plt.xlabel("Time (24H)")
+            plt.title('Number of Patrons Queuing for Elevators by Floor Over Time')
+            plt.legend()
+            plt.show()
+
     def main(self):
         BuildingPopulation = self.pop_per_floor * self.num_floors
         self.Calendar.Schedule(
@@ -255,67 +307,17 @@ class ReplicationTraditional:
         self.Calendar.Schedule(self.ClearItEvent(EventTime=0, outer=self))
         self.Calendar.Schedule(self.EndSimulationEvent(EventTime=self.run_length, outer=self))
 
-        NextEvent = self.Calendar.Remove()
+        self.NextEvent = self.Calendar.Remove()
 
-        print(f"waiting passengers: [(source floor, create time, destination floor), ...] "
-              f"car passengers: [{{floor: [passengers]}}, ...] car requests")
-        while not isinstance(NextEvent, self.EndSimulationEvent):
-            SimClasses.Clock = NextEvent.EventTime  # advance clock to start of next event
-            NextEvent.event()
+        while not isinstance(self.NextEvent, self.EndSimulationEvent):
+            SimClasses.Clock = self.NextEvent.EventTime  # advance clock to start of next event
+            self.NextEvent.event()
+            self.print_state()
+            self.NextEvent = self.Calendar.Remove()
 
-            ### TRACE ######
-            print(f"Executed event: {NextEvent} Current time: {SimClasses.Clock}, Post-event state below")
-            # pp.pprint([(e, e.EventTime, e.outer) for e in self.Calendar.ThisCalendar])
-            print(
-                "Passengers waiting (source floor, destination floor)", [
-                    (i, p.destination_floor) for i, q in enumerate(
-                        self.floor_queues) for p in q.ThisQueue])
-            for i, car in enumerate(self.cars):
-                print(f"Car {i+1} - onboard:{[len(floor) for floor in car.dest_passenger_map]} floor: {car.floor} "
-                      f"next floor: {car.next_floor} status: {car.status} direction: {car.direction}")
-            print([car.requests for car in self.cars])
-            ################
+        self.callback()
 
-            NextEvent = self.Calendar.Remove()
-
-        print(f"Mean time in system: {self.TimesInSystem.Mean()} Mean waiting time: {self.WaitingTimes.Mean()}")
-
-        arrivals_in_hours = np.array(self.AllArrivalTimes) / 60
-        sns.lineplot(arrivals_in_hours, list(range(1, len(self.AllArrivalTimes) + 1)))
-        # plot cumulative arrivals
-        plt.xlabel("Time (24H)")
-        plt.ylabel("Cumulative passenger arrivals")
-        plt.xticks(range(math.floor(min(arrivals_in_hours)), math.ceil(max(arrivals_in_hours)) + 1))
-        plt.show()
-
-        sns.distplot(self.TimesInSystem.Observations, norm_hist=True)  # plot histogram of times in system
-
-        plt.xlabel("Time (minutes)")
-        plt.show()
-
-        sns.distplot(self.WaitingTimes.Observations, norm_hist=True)
-        plt.xlabel("Time (minutes)")
-        plt.show()
-
-        if self.write_to_csvs:
-            for queue in self.floor_queues:
-                df = pd.read_csv(f"{queue.figure_dir}/queue{queue.id}_lengths.csv", names=['time', 'count'])
-                df.time = df.time / 60
-                sns.lineplot(x='time', y='count', label=f'floor {queue.id}', data=df)
-            plt.xticks(range(math.floor(min(df.time)), math.ceil(max(df.time)) + 1))
-            plt.xlabel("Time (24H)")
-            plt.title('Number of Patrons Queuing for Elevators by Floor Over Time')
-            plt.legend()
-            plt.show()
-
-    @classmethod
-    def CI_95(cls, data):
-        a = np.array(data)
-        n = len(a)
-        m = np.mean(a)
-        sd = np.std(a, ddof=1)
-        hw = 1.96 * sd / np.sqrt(n)
-        return m, [m - hw, m + hw]
+        return self.TimesInSystem, self.WaitingTimes, self.TravelTimes
 
 
 class ReplicationDestDispatch(ReplicationTraditional):
@@ -362,51 +364,21 @@ class ReplicationDestDispatch(ReplicationTraditional):
                         car.next_action()
                         break
 
-    def main(self):
-        BuildingPopulation = self.pop_per_floor * self.num_floors
-        self.Calendar.Schedule(
-            self.PassengerNonStationaryArrivalEvent(
-                arrival_rates=self.upbound_arrival_rate / 100 * BuildingPopulation * 12,
-                arrival_mode=0,
-                EventTime=0,
-                outer=self))
-        self.Calendar.Schedule(
-            self.PassengerNonStationaryArrivalEvent(
-                arrival_rates=self.downbound_arrival_rate / 100 * BuildingPopulation * 12,
-                arrival_mode=1,
-                EventTime=0,
-                outer=self))
-        self.Calendar.Schedule(
-            self.PassengerNonStationaryArrivalEvent(
-                arrival_rates=self.crossfloor_arrival_rate / 100 * BuildingPopulation * 12,
-                arrival_mode=2,
-                EventTime=0,
-                outer=self))
-        self.Calendar.Schedule(self.ClearItEvent(EventTime=0, outer=self))
-        self.Calendar.Schedule(self.EndSimulationEvent(EventTime=self.run_length, outer=self))
+    def print_state(self):
+        print(f"Executed event: {self.NextEvent} Current time: {SimClasses.Clock}, Post-event state below")
+        ### TRACE ######
+        # pp.pprint([(e, e.EventTime, e.outer) for e in self.Calendar.ThisCalendar])
+        # print("Source destination queue matrix count\n",
+        #       np.frompyfunc(lambda x: len(x.ThisQueue), 1, 1)(self.source_destination_queue_matrix))
+        # print("Source destination matrix\n", self.source_destination_matrix)
+        # for i, car in enumerate(self.cars):
+        #     print(f"Car {i+1} - onboard:{[len(floor) for floor in car.dest_passenger_map]} "
+        #           f"floor: {car.floor} next floor: {car.next_floor} status: {car.status} "
+        #           f"direction: {car.direction} final dest: {car.destination_dispatched}")
+        # pp.pprint([car.requests for car in self.cars])
+        ###############
 
-        NextEvent = self.Calendar.Remove()
-
-        print(f"waiting passengers: [(source floor, create time, destination floor), ...] "
-              f"car passengers: [{{floor: [passengers]}}, ...] car requests")
-        while not isinstance(NextEvent, self.EndSimulationEvent):
-            SimClasses.Clock = NextEvent.EventTime  # advance clock to start of next event
-            NextEvent.event()
-
-            print(f"Executed event: {NextEvent} Current time: {SimClasses.Clock}, Post-event state below")
-            # ### TRACE ######
-            # pp.pprint([(e, e.EventTime, e.outer) for e in self.Calendar.ThisCalendar])
-            # print("Source destination queue matrix count\n",
-            #       np.frompyfunc(lambda x: len(x.ThisQueue), 1, 1)(self.source_destination_queue_matrix))
-            # print("Source destination matrix\n", self.source_destination_matrix)
-            # for i, car in enumerate(self.cars):
-            #     print(f"Car {i+1} - onboard:{[len(floor) for floor in car.dest_passenger_map]} "
-            #           f"floor: {car.floor} next floor: {car.next_floor} status: {car.status} "
-            #           f"direction: {car.direction} final dest: {car.destination_dispatched}")
-            # pp.pprint([car.requests for car in self.cars])
-            ################
-            NextEvent = self.Calendar.Remove()
-
+    def callback(self):
         print(f"Mean time in system: {self.TimesInSystem.Mean()} Mean waiting time: {self.WaitingTimes.Mean()}")
 
         arrivals_in_hours = np.array(self.AllArrivalTimes) / 60
@@ -417,13 +389,18 @@ class ReplicationDestDispatch(ReplicationTraditional):
         plt.xticks(range(math.floor(min(arrivals_in_hours)), math.ceil(max(arrivals_in_hours)) + 1))
         plt.show()
 
-        sns.distplot(self.TimesInSystem.Observations, norm_hist=True)  # plot histogram of times in system
+        sns.distplot(self.TimesInSystem.Observations)  # plot histogram of times in system
         plt.title("Patron Time in System")
         plt.xlabel("Time (minutes)")
         plt.show()
 
-        sns.distplot(self.WaitingTimes.Observations, norm_hist=True)
+        sns.distplot(self.WaitingTimes.Observations)
         plt.title("Patron Waiting Time")
+        plt.xlabel("Time (minutes)")
+        plt.show()
+
+        sns.distplot(self.TravelTimes.Observations)
+        plt.title("Patron Travel Time")
         plt.xlabel("Time (minutes)")
         plt.show()
 
@@ -438,36 +415,17 @@ class ReplicationDestDispatch(ReplicationTraditional):
                     else:
                         df.time = df.time / 60
                         df = df.astype({'count': 'int64'})
-                        sns.lineplot(x='time', y='count', label=f'(source, destination) floor: {curr_floor}', data=df)
+                        sns.lineplot(x='time', y='count', label=f'floor {curr_floor}', data=df)
                         curr_floor = i // self.num_floors
                         df = pd.read_csv(f"{queue.item().figure_dir}/queue{queue.item().id}_lengths.csv",
                                          names=['time', 'count'])
             df.time = df.time / 60
             df = df.astype({'count': 'int64'})
-            sns.lineplot(x='time', y='count', label=f'(source, destination) floor: {curr_floor}', data=df)
+            sns.lineplot(x='time', y='count', label=f'floor {curr_floor}', data=df)
             # graph queue sizes over time by floor
             plt.xticks(range(math.floor(min(df.time)), math.ceil(max(df.time)) + 1))
             plt.xlabel("Time (24H)")
-            plt.title('Number of Patrons Queuing for Elevators by Floor Over Time')
+            plt.title('Number of Patrons Queuing for Elevators by Floor Over Time (Destination Dispatch)')
             plt.legend()
             plt.show()
 
-
-class Experiment:
-    def __init__(self):
-        pass
-
-    def __call__(self):
-        return self.main()
-
-    def main(self):
-        pass
-
-
-r0 = ReplicationDestDispatch(run_length=60*24,
-                             num_floors=5,
-                             num_cars=2,
-                             car_capacity=20,
-                             write_to_csvs=True)
-r0()
-pass

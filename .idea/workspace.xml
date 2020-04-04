@@ -21,25 +21,25 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="py" value="34" />
+          <entry key="py" value="37" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Python" value="34" />
+          <entry key="Python" value="37" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="Python Console" value="1328" />
-          <entry key="dummy" value="67" />
-          <entry key="py" value="34920" />
+          <entry key="dummy" value="130" />
+          <entry key="py" value="36329" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="PLAIN_TEXT" value="67" />
-          <entry key="Python" value="36248" />
+          <entry key="PLAIN_TEXT" value="130" />
+          <entry key="Python" value="37657" />
         </counts>
       </usages-collector>
     </session>
@@ -48,49 +48,30 @@
     <favorites_list name="code" />
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.46754616">
+    <splitter split-orientation="horizontal" split-proportion="0.5937129">
       <split-first>
         <leaf>
           <file pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/main.py">
+            <entry file="file://$PROJECT_DIR$/replication.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="512">
-                  <caret line="447" column="50" selection-start-line="447" selection-start-column="50" selection-end-line="447" selection-end-column="50" />
+                <state relative-caret-position="-1463">
+                  <caret line="299" column="28" lean-forward="true" selection-start-line="299" selection-start-column="28" selection-end-line="299" selection-end-column="28" />
                   <folding>
                     <element signature="e#0#13#0" expanded="true" />
-                    <marker date="1585884737824" expanded="true" signature="12616:13982" ph="..." />
-                    <marker date="1585884737824" expanded="true" signature="15277:15286" ph="..." />
+                    <marker date="1586043268250" expanded="true" signature="11176:12742" ph="..." />
+                    <marker date="1586043268250" expanded="true" signature="14279:14284" ph="..." />
+                    <marker date="1586043268250" expanded="true" signature="15308:15317" ph="..." />
+                    <marker date="1586043268250" expanded="true" signature="17555:20035" ph="..." />
                   </folding>
                 </state>
               </provider>
             </entry>
           </file>
           <file pinned="false" current-in-tab="false">
-            <entry file="file:///usr/local/lib/python3.7/site-packages/pandas/core/groupby/groupby.py">
+            <entry file="file://$PROJECT_DIR$/experiment.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="300">
-                  <caret line="1231" selection-start-line="1231" selection-end-line="1231" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/traditional_elevator.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="-2961">
-                  <caret line="56" column="45" lean-forward="true" selection-start-line="56" selection-start-column="45" selection-end-line="56" selection-end-column="45" />
-                  <folding>
-                    <element signature="e#0#48#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/pythonsim/SimClasses.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="793">
-                  <caret line="215" column="13" selection-start-line="215" selection-start-column="13" selection-end-line="215" selection-end-column="13" />
+                <state relative-caret-position="272">
+                  <caret line="16" column="87" lean-forward="true" selection-start-line="16" selection-start-column="87" selection-end-line="16" selection-end-column="87" />
                 </state>
               </provider>
             </entry>
@@ -98,31 +79,13 @@
           <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/custom_library.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="168">
-                  <caret line="21" column="8" selection-start-line="21" selection-start-column="8" selection-end-line="21" selection-end-column="8" />
+                <state>
+                  <caret line="12" column="23" lean-forward="true" selection-start-line="12" selection-start-column="23" selection-end-line="12" selection-end-column="23" />
                   <folding>
                     <element signature="e#0#41#0" expanded="true" />
-                    <marker date="1585845881371" expanded="true" signature="513:1457" ph="..." />
-                    <marker date="1585845881371" expanded="true" signature="671:926" ph="..." />
+                    <marker date="1586039490268" expanded="true" signature="1133:2077" ph="..." />
+                    <marker date="1586039490268" expanded="true" signature="1291:1546" ph="..." />
                   </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/../../HW3/Problem2_BaseSystem.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="212">
-                  <caret line="74" column="53" selection-start-line="74" selection-start-column="53" selection-end-line="74" selection-end-column="53" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/pythonsim/SimRNG.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="-7">
-                  <caret line="119" column="4" selection-start-line="119" selection-start-column="4" selection-end-line="119" selection-end-column="4" />
                 </state>
               </provider>
             </entry>
@@ -131,14 +94,26 @@
       </split-first>
       <split-second>
         <leaf>
-          <file pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/destdispatch_elevator.py">
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/elevator_car_dest_dispatch.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="642">
-                  <caret line="56" column="76" selection-start-line="56" selection-start-column="76" selection-end-line="56" selection-end-column="76" />
+                <state relative-caret-position="361">
+                  <caret line="40" column="20" selection-start-line="40" selection-start-column="20" selection-end-line="40" selection-end-column="20" />
                   <folding>
                     <element signature="e#0#48#0" expanded="true" />
-                    <marker date="1585880984664" expanded="true" signature="383:510" ph="..." />
+                    <marker date="1586036445069" expanded="true" signature="387:514" ph="..." />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/elevator_car_traditional.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="304">
+                  <caret line="98" column="30" selection-start-line="98" selection-start-column="30" selection-end-line="98" selection-end-column="30" />
+                  <folding>
+                    <element signature="e#0#48#0" expanded="true" />
                   </folding>
                 </state>
               </provider>
@@ -157,8 +132,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>Calendar</find>
-      <find>STREAM</find>
       <find>NumFloor</find>
       <find>TheQueues</find>
       <find>calendar</find>
@@ -183,6 +156,12 @@
       <find>ElevatorCar</find>
       <find>floor_queue</find>
       <find>nonzer</find>
+      <find>SimRNG</find>
+      <find>chain</find>
+      <find>waitingtimes</find>
+      <find>TimesIn</find>
+      <find>, norm_hist=True</find>
+      <find>entry_time</find>
     </findStrings>
     <replaceStrings>
       <replace>queues</replace>
@@ -193,6 +172,7 @@
       <replace>0.5</replace>
       <replace>ElevatorCarTraditional</replace>
       <replace>scan_start</replace>
+      <replace />
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -208,18 +188,22 @@
         <option value="$PROJECT_DIR$/entities.py" />
         <option value="$PROJECT_DIR$/pythonsim/SimClasses.py" />
         <option value="$PROJECT_DIR$/../../HW3/hw3_q2.py" />
-        <option value="$PROJECT_DIR$/custom_library.py" />
         <option value="$PROJECT_DIR$/traditional_elevator.py" />
         <option value="$PROJECT_DIR$/destdispatch_elevator.py" />
         <option value="$PROJECT_DIR$/main.py" />
+        <option value="$PROJECT_DIR$/elevator_car_dest_dispatch.py" />
+        <option value="$PROJECT_DIR$/elevator_car_traditional.py" />
+        <option value="$PROJECT_DIR$/custom_library.py" />
+        <option value="$PROJECT_DIR$/experiment.py" />
+        <option value="$PROJECT_DIR$/replication.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-19" />
-    <option name="y" value="23" />
-    <option name="width" value="1920" />
-    <option name="height" value="1057" />
+    <option name="x" value="189" />
+    <option name="y" value="216" />
+    <option name="width" value="1280" />
+    <option name="height" value="777" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -267,7 +251,28 @@
       </list>
     </option>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python.experiment">
+    <configuration name="experiment" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="code" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/experiment.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="code" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -280,7 +285,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/replication.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -289,8 +294,13 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <list>
+      <item itemvalue="Python.main" />
+      <item itemvalue="Python.experiment" />
+    </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.experiment" />
         <item itemvalue="Python.main" />
       </list>
     </recent_temporary>
@@ -310,15 +320,14 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1920" height="1057" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info id="Favorites" side_tool="true" />
-      <window_info content_ui="combo" id="Project" order="0" weight="0.39577836" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.11029024" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Version Control" show_stripe_button="false" />
       <window_info anchor="bottom" id="Python Console" weight="0.32947367" />
       <window_info anchor="bottom" id="Terminal" weight="0.32947367" />
-      <window_info anchor="bottom" id="Event Log" side_tool="true" weight="0.329927" />
+      <window_info anchor="bottom" id="Event Log" side_tool="true" weight="0.32947367" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
       <window_info active="true" anchor="bottom" x="334" y="1125" width="1280" height="755" id="Run" order="2" type="WINDOWED" visible="true" weight="0.9658031" />
@@ -343,14 +352,19 @@
           <option name="timeStamp" value="6" />
         </line-breakpoint>
         <line-breakpoint suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/main.py</url>
+          <url>file://$PROJECT_DIR$/replication.py</url>
           <line>24</line>
           <option name="timeStamp" value="14" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/main.py</url>
-          <line>440</line>
+          <url>file://$PROJECT_DIR$/replication.py</url>
+          <line>431</line>
           <option name="timeStamp" value="90" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/experiment.py</url>
+          <line>24</line>
+          <option name="timeStamp" value="91" />
         </line-breakpoint>
         <breakpoint enabled="true" type="python-exception">
           <properties notifyOnTerminate="true" exception="builtins.TypeError">
@@ -457,13 +471,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pythonsim/SimRNG.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-7">
-          <caret line="119" column="4" selection-start-line="119" selection-start-column="4" selection-end-line="119" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/pythonsim/SimFunctions.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="651">
@@ -475,13 +482,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="326">
           <caret line="62" lean-forward="true" selection-start-line="62" selection-end-line="62" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../HW3/Problem2_BaseSystem.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="212">
-          <caret line="74" column="53" selection-start-line="74" selection-start-column="53" selection-end-line="74" selection-end-column="53" />
         </state>
       </provider>
     </entry>
@@ -499,28 +499,56 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pythonsim/SimClasses.py">
+    <entry file="file:///usr/local/lib/python3.7/site-packages/pandas/core/groupby/groupby.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="793">
-          <caret line="215" column="13" selection-start-line="215" selection-start-column="13" selection-end-line="215" selection-end-column="13" />
+        <state relative-caret-position="300">
+          <caret line="1231" selection-start-line="1231" selection-end-line="1231" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/destdispatch_elevator.py">
+    <entry file="file://$PROJECT_DIR$/pythonsim/SimRNG.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="642">
-          <caret line="56" column="76" selection-start-line="56" selection-start-column="76" selection-end-line="56" selection-end-column="76" />
+        <state relative-caret-position="393">
+          <caret line="127" column="13" selection-start-line="127" selection-start-column="13" selection-end-line="127" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../HW3/Problem2_BaseSystem.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="569">
+          <caret line="74" column="53" selection-start-line="74" selection-start-column="53" selection-end-line="74" selection-end-column="53" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/lib/python3.7/site-packages/numpy/lib/function_base.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="302">
+          <caret line="3721" column="4" selection-start-line="3721" selection-start-column="4" selection-end-line="3721" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pythonsim/SimClasses.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="186">
+          <caret line="88" column="6" selection-start-line="88" selection-start-column="6" selection-end-line="88" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/elevator_car_dest_dispatch.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="361">
+          <caret line="40" column="20" selection-start-line="40" selection-start-column="20" selection-end-line="40" selection-end-column="20" />
           <folding>
             <element signature="e#0#48#0" expanded="true" />
-            <marker date="1585880984664" expanded="true" signature="383:510" ph="..." />
+            <marker date="1586036445069" expanded="true" signature="387:514" ph="..." />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/traditional_elevator.py">
+    <entry file="file://$PROJECT_DIR$/elevator_car_traditional.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2961">
-          <caret line="56" column="45" lean-forward="true" selection-start-line="56" selection-start-column="45" selection-end-line="56" selection-end-column="45" />
+        <state relative-caret-position="304">
+          <caret line="98" column="30" selection-start-line="98" selection-start-column="30" selection-end-line="98" selection-end-column="30" />
           <folding>
             <element signature="e#0#48#0" expanded="true" />
           </folding>
@@ -529,31 +557,33 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/custom_library.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="168">
-          <caret line="21" column="8" selection-start-line="21" selection-start-column="8" selection-end-line="21" selection-end-column="8" />
+        <state>
+          <caret line="12" column="23" lean-forward="true" selection-start-line="12" selection-start-column="23" selection-end-line="12" selection-end-column="23" />
           <folding>
             <element signature="e#0#41#0" expanded="true" />
-            <marker date="1585845881371" expanded="true" signature="513:1457" ph="..." />
-            <marker date="1585845881371" expanded="true" signature="671:926" ph="..." />
+            <marker date="1586039490268" expanded="true" signature="1133:2077" ph="..." />
+            <marker date="1586039490268" expanded="true" signature="1291:1546" ph="..." />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file:///usr/local/lib/python3.7/site-packages/pandas/core/groupby/groupby.py">
+    <entry file="file://$PROJECT_DIR$/experiment.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
-          <caret line="1231" selection-start-line="1231" selection-end-line="1231" />
+        <state relative-caret-position="272">
+          <caret line="16" column="87" lean-forward="true" selection-start-line="16" selection-start-column="87" selection-end-line="16" selection-end-column="87" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main.py">
+    <entry file="file://$PROJECT_DIR$/replication.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="512">
-          <caret line="447" column="50" selection-start-line="447" selection-start-column="50" selection-end-line="447" selection-end-column="50" />
+        <state relative-caret-position="-1463">
+          <caret line="299" column="28" lean-forward="true" selection-start-line="299" selection-start-column="28" selection-end-line="299" selection-end-column="28" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
-            <marker date="1585884737824" expanded="true" signature="12616:13982" ph="..." />
-            <marker date="1585884737824" expanded="true" signature="15277:15286" ph="..." />
+            <marker date="1586043268250" expanded="true" signature="11176:12742" ph="..." />
+            <marker date="1586043268250" expanded="true" signature="14279:14284" ph="..." />
+            <marker date="1586043268250" expanded="true" signature="15308:15317" ph="..." />
+            <marker date="1586043268250" expanded="true" signature="17555:20035" ph="..." />
           </folding>
         </state>
       </provider>

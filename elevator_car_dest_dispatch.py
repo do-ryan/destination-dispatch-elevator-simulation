@@ -1,5 +1,5 @@
 from custom_library import FunctionalEventNotice
-from traditional_elevator import ElevatorCarTraditional
+from elevator_car_traditional import ElevatorCarTraditional
 
 import pythonsim.SimClasses as SimClasses
 import numpy as np
@@ -38,7 +38,7 @@ class ElevatorCarDestDispatch(ElevatorCarTraditional):
                 if self.outer.Busy < self.outer.NumberOfUnits:
                     self.outer.Seize(1)
                     self.outer.dest_passenger_map[next_passenger.destination_floor].append(next_passenger)
-                    self.outer.WaitingTimes.Record(SimClasses.Clock - next_passenger.CreateTime)
+                    self.outer.outer.WaitingTimes.Record(SimClasses.Clock - next_passenger.CreateTime)
                     num_passengers += 1
 
                     if self.outer.requests[self.outer.floor, direction_requested] == 0:

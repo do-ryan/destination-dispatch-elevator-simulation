@@ -43,10 +43,6 @@ class ElevatorCarTraditional(SimClasses.Resource):
         self.top_speed = top_speed
         self.floor_distance = floor_distance
 
-        # stats
-        self.WaitingTimes = self.outer.WaitingTimes
-        self.TimesInSystem = self.outer.TimesInSystem
-
         # Note: must change status as soon as start action event is scheduled.
         # Otherwise it allows task allocated to trigger another action event if car is idle
 
@@ -66,13 +62,10 @@ class ElevatorCarTraditional(SimClasses.Resource):
                 next_passenger = self.outer.floor_queues[self.outer.floor].Remove()
                 if self.outer.requests[self.outer.floor, next_passenger.direction]:
                     # if this car has a request equal to the first person in queue's intended direction
-
                     assert isinstance(next_passenger, Passenger)
-
                     self.outer.Seize(1)
                     self.outer.dest_passenger_map[next_passenger.destination_floor].append(next_passenger)
-
-                    self.outer.WaitingTimes.Record(SimClasses.Clock - next_passenger.CreateTime)
+                    self.outer.outer.WaitingTimes.Record(SimClasses.Clock - next_passenger.CreateTime)
                     num_passengers += 1
                 else:
                     # if the car does not have a request equal to first person's intended
@@ -101,6 +94,9 @@ class ElevatorCarTraditional(SimClasses.Resource):
 
     class PickupEndEvent(FunctionalEventNotice):
         def event(self):
+            for dest in self.outer.dest_passenger_map:
+                for passenger in dest:
+                    passenger.entry_time = SimClasses.Clock
             self.outer.next_action()
 
     class DropoffEvent(FunctionalEventNotice):
@@ -110,8 +106,9 @@ class ElevatorCarTraditional(SimClasses.Resource):
             num_passengers = 0
             while len(self.outer.dest_passenger_map[self.outer.floor]) > 0:
                 self.outer.Free(1)
-                self.outer.TimesInSystem.Record(SimClasses.Clock -
-                                                self.outer.dest_passenger_map[self.outer.floor].pop(0).CreateTime)
+                next_passenger = self.outer.dest_passenger_map[self.outer.floor].pop(0)
+                self.outer.outer.TimesInSystem.Record(SimClasses.Clock - next_passenger.CreateTime)
+                self.outer.outer.TravelTimes.Record(SimClasses.Clock - next_passenger.entry_time)
                 num_passengers += 1
             self.outer.Calendar.Schedule(
                 self.outer.DropoffEndEvent(
@@ -272,3 +269,4 @@ class Passenger(SimClasses.Entity):
         self.source_floor = source_floor
         self.destination_floor = destination_floor
         self.direction = int(self.destination_floor > self.source_floor)
+        self.entry_time = None

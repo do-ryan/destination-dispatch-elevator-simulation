@@ -3,6 +3,16 @@ import pythonsim.SimClasses as SimClasses
 from abc import abstractmethod
 from pathlib import Path
 import csv
+import numpy as np
+
+
+def CI_95(data):
+    a = np.array(data)
+    n = len(a)
+    m = np.mean(a)
+    sd = np.std(a, ddof=1)
+    hw = 1.96 * sd / np.sqrt(n)
+    return m, [m - hw, m + hw]
 
 
 class DTStatPlus(SimClasses.DTStat):
@@ -16,6 +26,18 @@ class DTStatPlus(SimClasses.DTStat):
         self.SumSquared = self.SumSquared + X * X
         self.NumberOfObservations = self.NumberOfObservations + 1
         self.Observations.append(X)
+
+    def BatchedQuantile(self, b: int, q: float):
+        """
+        Args:
+            - b: batch size
+            - q: quantile
+        """
+
+        batched_observations = np.array_split(np.random.permutation(self.Observations),
+                                             indices_or_sections=b,
+                                             axis=0)
+        return np.array([np.quantile(batch, q) for batch in batched_observations])
 
 
 class FIFOQueuePlus(SimClasses.FIFOQueue):
