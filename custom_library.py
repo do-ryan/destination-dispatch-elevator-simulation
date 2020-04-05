@@ -15,16 +15,12 @@ def CI_95(data):
     return m, [m - hw, m + hw]
 
 
-class DTStatPlus(SimClasses.DTStat):
+class DTStatPlus:
     def __init__(self):
         super().__init__()
         self.Observations = []
 
     def Record(self, X):
-        # Update the DTStat
-        self.Sum = self.Sum + X
-        self.SumSquared = self.SumSquared + X * X
-        self.NumberOfObservations = self.NumberOfObservations + 1
         self.Observations.append(X)
 
     def BatchedQuantile(self, b: int, q: float):
@@ -38,6 +34,13 @@ class DTStatPlus(SimClasses.DTStat):
                                              indices_or_sections=b,
                                              axis=0)
         return np.array([np.quantile(batch, q) for batch in batched_observations])
+
+    def probInRangeCI95(self, range: list):
+        sample_prob = np.mean(
+            np.logical_and(
+                np.array(self.Observations) >= range[0], np.array(self.Observations) <= range[1]).astype(int))
+        se = np.sqrt(sample_prob * (1 - sample_prob) / len(self.Observations))
+        return sample_prob, [sample_prob - 1.96 * se, sample_prob + 1.96 * se]
 
 
 class FIFOQueuePlus(SimClasses.FIFOQueue):

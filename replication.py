@@ -73,24 +73,13 @@ class ReplicationTraditional:
         self.WaitingTimes = DTStatPlus()
         self.TimesInSystem = DTStatPlus()
         self.TravelTimes = DTStatPlus()
-        self.CTStats = []
-        self.DTStats = [self.WaitingTimes, self.TimesInSystem]
-        self.TheQueues = [] + self.floor_queues
         self.AllArrivalTimes = []
 
         self.cars = [ElevatorCarTraditional(outer=self, capacity=car_capacity) for _ in range(0, self.num_cars)]
+        # don't need SimFunctionsInit .. using separate replication instances
 
-        self.TheResources = [] + self.cars
-        SimFunctions.SimFunctionsInit(
-            self.Calendar,
-            self.TheQueues,
-            self.CTStats,
-            self.DTStats,
-            self.TheResources)
-        # resets all, including SimClasses.Clock
-
-    def __call__(self):
-        return self.main()
+    def __call__(self, print_trace:bool):
+        return self.main(print_trace)
 
     class AssignRequestEvent(FunctionalEventNotice):
         def __init__(self, new_passenger: Passenger, *args, **kwargs):
@@ -225,17 +214,12 @@ class ReplicationTraditional:
                                                                        outer=self.outer,
                                                                        new_passenger=new_passenger))
 
-    class ClearItEvent(FunctionalEventNotice):
-        def event(self):
-            SimFunctions.ClearStats(self.outer.CTStats, self.outer.DTStats)
-
     class EndSimulationEvent(FunctionalEventNotice):
         def event(self):
             pass
 
     def print_state(self):
         ### TRACE ######
-        print(f"Executed event: {self.NextEvent} Current time: {SimClasses.Clock}, Post-event state below")
         # pp.pprint([(e, e.EventTime, e.outer) for e in self.Calendar.ThisCalendar])
         print(
             "Passengers waiting (source floor, destination floor)", [
@@ -248,7 +232,8 @@ class ReplicationTraditional:
         ################
 
     def callback(self):
-        print(f"Mean time in system: {self.TimesInSystem.Mean()} Mean waiting time: {self.WaitingTimes.Mean()}")
+        print(f"Mean time in system: {np.mean(self.TimesInSystem.Observations)} "
+              f"Mean waiting time: {np.mean(self.WaitingTimes.Observations)}")
 
         arrivals_in_hours = np.array(self.AllArrivalTimes) / 60
         sns.lineplot(arrivals_in_hours, list(range(1, len(self.AllArrivalTimes) + 1)))
@@ -284,7 +269,7 @@ class ReplicationTraditional:
             plt.legend()
             plt.show()
 
-    def main(self):
+    def main(self, print_trace: bool):
         BuildingPopulation = self.pop_per_floor * self.num_floors
         self.Calendar.Schedule(
             self.PassengerNonStationaryArrivalEvent(
@@ -304,7 +289,6 @@ class ReplicationTraditional:
                 arrival_mode=2,
                 EventTime=0,
                 outer=self))
-        self.Calendar.Schedule(self.ClearItEvent(EventTime=0, outer=self))
         self.Calendar.Schedule(self.EndSimulationEvent(EventTime=self.run_length, outer=self))
 
         self.NextEvent = self.Calendar.Remove()
@@ -312,7 +296,9 @@ class ReplicationTraditional:
         while not isinstance(self.NextEvent, self.EndSimulationEvent):
             SimClasses.Clock = self.NextEvent.EventTime  # advance clock to start of next event
             self.NextEvent.event()
-            self.print_state()
+            print(f"Executed event: {self.NextEvent} Current time: {SimClasses.Clock}, Post-event state below")
+            if print_trace:
+                self.print_state()
             self.NextEvent = self.Calendar.Remove()
 
         self.callback()
@@ -365,17 +351,16 @@ class ReplicationDestDispatch(ReplicationTraditional):
                         break
 
     def print_state(self):
-        print(f"Executed event: {self.NextEvent} Current time: {SimClasses.Clock}, Post-event state below")
         ### TRACE ######
         # pp.pprint([(e, e.EventTime, e.outer) for e in self.Calendar.ThisCalendar])
-        # print("Source destination queue matrix count\n",
-        #       np.frompyfunc(lambda x: len(x.ThisQueue), 1, 1)(self.source_destination_queue_matrix))
-        # print("Source destination matrix\n", self.source_destination_matrix)
-        # for i, car in enumerate(self.cars):
-        #     print(f"Car {i+1} - onboard:{[len(floor) for floor in car.dest_passenger_map]} "
-        #           f"floor: {car.floor} next floor: {car.next_floor} status: {car.status} "
-        #           f"direction: {car.direction} final dest: {car.destination_dispatched}")
-        # pp.pprint([car.requests for car in self.cars])
+        print("Source destination queue matrix count\n",
+              np.frompyfunc(lambda x: len(x.ThisQueue), 1, 1)(self.source_destination_queue_matrix))
+        print("Source destination matrix\n", self.source_destination_matrix)
+        for i, car in enumerate(self.cars):
+            print(f"Car {i+1} - onboard:{[len(floor) for floor in car.dest_passenger_map]} "
+                  f"floor: {car.floor} next floor: {car.next_floor} status: {car.status} "
+                  f"direction: {car.direction} final dest: {car.destination_dispatched}")
+        pp.pprint([car.requests for car in self.cars])
         ###############
 
     def callback(self):

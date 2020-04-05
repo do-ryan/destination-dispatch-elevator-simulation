@@ -17,7 +17,8 @@ class Experiment:
                                                                           num_floors=5,
                                                                           num_cars=2,
                                                                           car_capacity=20,
-                                                                          write_to_csvs=False).main()
+                                                                          write_to_csvs=False).main(print_trace=False)
+        # print(TimesInSystem.Mean, WaitingTimes.probInRangeCI95([0, 50/60]), TravelTimes.probInRangeCI95([0, 150/60]))
         pass
 
 Experiment(batch_size=20, quantile=0.99).main()
