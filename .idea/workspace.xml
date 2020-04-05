@@ -31,15 +31,15 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="Python Console" value="1542" />
+          <entry key="Python Console" value="1660" />
           <entry key="dummy" value="130" />
-          <entry key="py" value="38247" />
+          <entry key="py" value="39840" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="PLAIN_TEXT" value="130" />
-          <entry key="Python" value="39789" />
+          <entry key="Python" value="41500" />
         </counts>
       </usages-collector>
     </session>
@@ -48,21 +48,16 @@
     <favorites_list name="code" />
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.5937129">
+    <splitter split-orientation="horizontal" split-proportion="0.46500593">
       <split-first>
         <leaf>
           <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/replication.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="247">
-                  <caret line="307" lean-forward="true" selection-start-line="307" selection-end-line="307" />
+                <state relative-caret-position="-118">
+                  <caret line="327" column="48" selection-start-line="327" selection-start-column="48" selection-end-line="327" selection-end-column="48" />
                   <folding>
                     <element signature="e#0#13#0" expanded="true" />
-                    <marker date="1586054379754" expanded="true" signature="10701:12315" ph="..." />
-                    <marker date="1586054379754" expanded="true" signature="14642:14647" ph="..." />
-                    <marker date="1586054379754" expanded="true" signature="15671:15680" ph="..." />
-                    <marker date="1586054379754" expanded="true" signature="17027:17036" ph="..." />
-                    <marker date="1586054379754" expanded="true" signature="17794:20274" ph="..." />
                   </folding>
                 </state>
               </provider>
@@ -71,8 +66,8 @@
           <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/experiment.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="34">
-                  <caret line="2" column="18" selection-start-line="2" selection-start-column="18" selection-end-line="2" selection-end-column="18" />
+                <state relative-caret-position="272">
+                  <caret line="16" column="74" selection-start-line="16" selection-start-column="74" selection-end-line="16" selection-end-column="74" />
                   <folding>
                     <element signature="e#0#71#0" expanded="true" />
                   </folding>
@@ -83,8 +78,11 @@
           <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/custom_library.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="237">
+                <state relative-caret-position="-307">
                   <caret line="23" column="35" selection-start-line="23" selection-start-column="35" selection-end-line="23" selection-end-column="35" />
+                  <folding>
+                    <element signature="e#0#41#0" expanded="true" />
+                  </folding>
                 </state>
               </provider>
             </entry>
@@ -93,24 +91,24 @@
       </split-first>
       <split-second>
         <leaf>
-          <file pinned="false" current-in-tab="false">
+          <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/elevator_car_dest_dispatch.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="361">
-                  <caret line="40" column="20" selection-start-line="40" selection-start-column="20" selection-end-line="40" selection-end-column="20" />
+                <state relative-caret-position="357">
+                  <caret line="21" lean-forward="true" selection-start-line="21" selection-end-line="21" />
                   <folding>
                     <element signature="e#0#48#0" expanded="true" />
-                    <marker date="1586036445069" expanded="true" signature="387:514" ph="..." />
+                    <marker date="1586121322418" expanded="true" signature="499:626" ph="..." />
                   </folding>
                 </state>
               </provider>
             </entry>
           </file>
-          <file pinned="false" current-in-tab="true">
+          <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/elevator_car_traditional.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="-244">
-                  <caret line="5" lean-forward="true" selection-start-line="5" selection-end-line="5" />
+                <state relative-caret-position="474">
+                  <caret line="138" column="41" lean-forward="true" selection-start-line="138" selection-start-column="41" selection-end-line="138" selection-end-column="41" />
                   <folding>
                     <element signature="e#0#48#0" expanded="true" />
                   </folding>
@@ -131,8 +129,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>TheQueues</find>
-      <find>calendar</find>
       <find>SimFunctions.Schedule</find>
       <find>SimFunctions.SchedulePlus</find>
       <find>next_floor</find>
@@ -161,6 +157,8 @@
       <find>, norm_hist=True</find>
       <find>entry_time</find>
       <find>SimClasses</find>
+      <find>car.dest_passe</find>
+      <find>callback</find>
     </findStrings>
     <replaceStrings>
       <replace>queues</replace>
@@ -190,11 +188,11 @@
         <option value="$PROJECT_DIR$/traditional_elevator.py" />
         <option value="$PROJECT_DIR$/destdispatch_elevator.py" />
         <option value="$PROJECT_DIR$/main.py" />
-        <option value="$PROJECT_DIR$/elevator_car_dest_dispatch.py" />
         <option value="$PROJECT_DIR$/elevator_car_traditional.py" />
         <option value="$PROJECT_DIR$/custom_library.py" />
-        <option value="$PROJECT_DIR$/experiment.py" />
         <option value="$PROJECT_DIR$/replication.py" />
+        <option value="$PROJECT_DIR$/elevator_car_dest_dispatch.py" />
+        <option value="$PROJECT_DIR$/experiment.py" />
       </list>
     </option>
   </component>
@@ -330,8 +328,8 @@
       <window_info anchor="bottom" id="Event Log" side_tool="true" weight="0.32947367" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" x="334" y="1125" width="1280" height="755" id="Run" order="2" type="WINDOWED" visible="true" weight="0.9658031" />
-      <window_info active="true" anchor="bottom" x="334" y="1125" width="1280" height="755" id="Debug" order="3" type="WINDOWED" visible="true" weight="0.7547445" />
+      <window_info active="true" anchor="bottom" x="334" y="1125" width="1280" height="755" id="Run" order="2" type="WINDOWED" visible="true" weight="0.9658031" />
+      <window_info anchor="bottom" x="334" y="1125" width="1280" height="755" id="Debug" order="3" type="WINDOWED" visible="true" weight="0.7547445" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -356,22 +354,23 @@
           <line>24</line>
           <option name="timeStamp" value="14" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+        <line-breakpoint suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/replication.py</url>
           <line>431</line>
           <option name="timeStamp" value="90" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+        <line-breakpoint suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/experiment.py</url>
-          <line>22</line>
+          <line>24</line>
           <option name="timeStamp" value="91" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <condition disabled="true" expression="SimClasses.Clock &gt;= 770" language="Python" />
           <url>file://$PROJECT_DIR$/replication.py</url>
-          <line>326</line>
-          <option name="timeStamp" value="96" />
+          <line>303</line>
+          <option name="timeStamp" value="101" />
         </line-breakpoint>
-        <breakpoint enabled="true" type="python-exception">
+        <breakpoint type="python-exception">
           <properties notifyOnTerminate="true" exception="builtins.TypeError">
             <option name="notifyOnTerminate" value="true" />
           </properties>
@@ -383,11 +382,17 @@
           </properties>
           <option name="timeStamp" value="29" />
         </breakpoint>
-        <breakpoint enabled="true" type="python-exception">
+        <breakpoint type="python-exception">
           <properties notifyOnTerminate="true" exception="builtins.AssertionError">
             <option name="notifyOnTerminate" value="true" />
           </properties>
           <option name="timeStamp" value="87" />
+        </breakpoint>
+        <breakpoint enabled="true" type="python-exception">
+          <properties notifyOnTerminate="true" exception="builtins.AttributeError">
+            <option name="notifyOnTerminate" value="true" />
+          </properties>
+          <option name="timeStamp" value="100" />
         </breakpoint>
       </breakpoints>
       <breakpoints-dialog>
@@ -404,6 +409,11 @@
   </component>
   <component name="debuggerHistoryManager">
     <expressions id="breakpointCondition">
+      <expression>
+        <expression-string>SimClasses.Clock &gt;= 770</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
       <expression>
         <expression-string>SimClasses.Clock &gt;= 492.9980115645832</expression-string>
         <language-id>Python</language-id>
@@ -441,11 +451,6 @@
       </expression>
       <expression>
         <expression-string>SimClasses.Clock &gt;= 10.129726414754288</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>SimClasses.Clock == 10.129726414754288</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
@@ -539,55 +544,53 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/elevator_car_dest_dispatch.py">
+    <entry file="file://$PROJECT_DIR$/elevator_car_traditional.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="361">
-          <caret line="40" column="20" selection-start-line="40" selection-start-column="20" selection-end-line="40" selection-end-column="20" />
+        <state relative-caret-position="474">
+          <caret line="138" column="41" lean-forward="true" selection-start-line="138" selection-start-column="41" selection-end-line="138" selection-end-column="41" />
           <folding>
             <element signature="e#0#48#0" expanded="true" />
-            <marker date="1586036445069" expanded="true" signature="387:514" ph="..." />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/custom_library.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="237">
+        <state relative-caret-position="-307">
           <caret line="23" column="35" selection-start-line="23" selection-start-column="35" selection-end-line="23" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/elevator_car_traditional.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-244">
-          <caret line="5" lean-forward="true" selection-start-line="5" selection-end-line="5" />
           <folding>
-            <element signature="e#0#48#0" expanded="true" />
+            <element signature="e#0#41#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/experiment.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" column="18" selection-start-line="2" selection-start-column="18" selection-end-line="2" selection-end-column="18" />
+        <state relative-caret-position="272">
+          <caret line="16" column="74" selection-start-line="16" selection-start-column="74" selection-end-line="16" selection-end-column="74" />
           <folding>
             <element signature="e#0#71#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/elevator_car_dest_dispatch.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="357">
+          <caret line="21" lean-forward="true" selection-start-line="21" selection-end-line="21" />
+          <folding>
+            <element signature="e#0#48#0" expanded="true" />
+            <marker date="1586121322418" expanded="true" signature="499:626" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/replication.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="247">
-          <caret line="307" lean-forward="true" selection-start-line="307" selection-end-line="307" />
+        <state relative-caret-position="-118">
+          <caret line="327" column="48" selection-start-line="327" selection-start-column="48" selection-end-line="327" selection-end-column="48" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
-            <marker date="1586054379754" expanded="true" signature="10701:12315" ph="..." />
-            <marker date="1586054379754" expanded="true" signature="14642:14647" ph="..." />
-            <marker date="1586054379754" expanded="true" signature="15671:15680" ph="..." />
-            <marker date="1586054379754" expanded="true" signature="17027:17036" ph="..." />
-            <marker date="1586054379754" expanded="true" signature="17794:20274" ph="..." />
           </folding>
         </state>
       </provider>

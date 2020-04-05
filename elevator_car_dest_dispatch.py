@@ -8,15 +8,17 @@ import math
 
 
 class ElevatorCarDestDispatch(ElevatorCarTraditional):
-    def __init__(self, outer, *args, **kwargs):
+    def __init__(self, outer, max_wait_threshold=5, *args, **kwargs):
         """
         Args:
             - outer: ReplicationDestDispatch
+            - max_wait_threshold: if anyone waits past this threshold, they get priority.
         """
         super().__init__(outer, *args, **kwargs)
         self.source_destination_matrix = self.outer.source_destination_matrix
         self.source_destination_queue_matrix = self.outer.source_destination_queue_matrix
         self.destination_dispatched = None  # the destination floor this car is dispatched to
+        self.max_wait_threshold = max_wait_threshold
 
     class PickupEvent(FunctionalEventNotice):
         def event(self):
@@ -28,36 +30,39 @@ class ElevatorCarDestDispatch(ElevatorCarTraditional):
             assert len(directions_requested) == 1
             direction_requested = directions_requested[0]
             leftovers = []
-            while self.outer.requests[self.outer.floor, direction_requested] > 0 \
-                    or self.outer.source_destination_matrix[self.outer.floor, self.outer.destination_dispatched] > 0:
+            while (self.outer.requests[self.outer.floor, direction_requested] > 0
+                    or self.outer.source_destination_matrix[self.outer.floor, self.outer.destination_dispatched] > 0):
                 # while this car still need to pick up allocated tasks or if there are new ones
                 next_passenger = self.outer.source_destination_queue_matrix[self.outer.floor,
                                                                             self.outer.destination_dispatched].Remove()
                 # O(number of queued passengers/ num_floors)
 
+                if self.outer.requests[self.outer.floor, direction_requested] <= 0:
+                    self.outer.source_destination_matrix[self.outer.floor, self.outer.destination_dispatched] -= 1
+                    # if the car is now picking up unallocated requests, deplete from the matrix.
                 if self.outer.Busy < self.outer.NumberOfUnits:
                     self.outer.Seize(1)
                     self.outer.dest_passenger_map[next_passenger.destination_floor].append(next_passenger)
                     self.outer.outer.WaitingTimes.Record(SimClasses.Clock - next_passenger.CreateTime)
                     num_passengers += 1
-
-                    if self.outer.requests[self.outer.floor, direction_requested] == 0:
-                        self.outer.source_destination_matrix[self.outer.floor, self.outer.destination_dispatched] -= 1
                 else:
                     self.outer.Calendar.Schedule(self.outer.outer.AssignRequestEvent(new_passenger=next_passenger,
                                                                                      EventTime=0,
                                                                                      outer=self.outer.outer))
                     leftovers.append(next_passenger)
-                    raise Exception('There should not be any outstanding passenger requests once full.')
-                    break
+                    # if there are more suitable passengers than space available. usually if
+                    # too many are allocated in AssignRequestEvent
                 self.outer.requests[self.outer.floor, direction_requested] -= 1
+                # subtract from requests array whether or not the passsenger is allocated or non-allocated.
 
             self.outer.requests[self.outer.floor, direction_requested] = 0
             # must be 0 here. if there were leftover requests, there are now in leftovers. might have been negative
             # if there were rejects (more waiting passengers than expected).
 
-            self.outer.source_destination_queue_matrix[self.outer.floor,
-                                                       self.outer.destination_dispatched].ThisQueue += leftovers
+            self.outer.source_destination_queue_matrix[self.outer.floor, self.outer.destination_dispatched].ThisQueue \
+                = leftovers + self.outer.source_destination_queue_matrix[self.outer.floor,
+                                                                         self.outer.destination_dispatched].ThisQueue
+                # make sure people added back to the queue are put in the front
             self.outer.Calendar.Schedule(self.outer.PickupEndEvent(EventTime=self.outer.floor_dwell(num_passengers),
                                                                    outer=self.outer))
 
@@ -68,13 +73,14 @@ class ElevatorCarDestDispatch(ElevatorCarTraditional):
             # If no requests nor dropoffs, check central pool for waiting requests.
             # Pick destination-direction combination with highest count of passengers.
             largest_count = 0
+            exceed_max_wait_threshold = False
             chosen_destination_direction = ()
             chosen_destination_earliest_arrival = math.inf
-            for i in range(2*self.source_destination_matrix.shape[1]):
+            for i in range(2 * self.source_destination_matrix.shape[1]):
                 destination_direction = (i // 2, i % 2)
                 if destination_direction[1] == 1:
                     sum = np.sum(self.source_destination_matrix[
-                                 0:destination_direction[0]+1,
+                                 0:destination_direction[0] + 1,
                                  destination_direction[0]])
                 else:
                     sum = np.sum(self.source_destination_matrix[
@@ -83,15 +89,26 @@ class ElevatorCarDestDispatch(ElevatorCarTraditional):
                                  ])
                 # Find count of passengers with this destination and direction
 
-                if sum < largest_count:
-                    continue
-
                 destination_earliest_arrival = math.inf
-                for target_destination_queue in self.source_destination_queue_matrix[:, destination_direction[0]]:
+                if destination_direction[1] == 0:
+                    sweep = self.source_destination_queue_matrix[destination_direction[0]+1::,
+                                                                 destination_direction[0]]
+                else:
+                    sweep = self.source_destination_queue_matrix[0:destination_direction[0],
+                                                                 destination_direction[0]]
+
+                for target_destination_queue in sweep:
                     # O(num floors)
                     if target_destination_queue.ThisQueue:
-                        destination_earliest_arrival = min(destination_earliest_arrival, target_destination_queue.ThisQueue[0].CreateTime)
-                # Find earliest arrival time out of all waiting to go to this destination in this direction
+                        if sum >= largest_count:
+                            destination_earliest_arrival = min(
+                                destination_earliest_arrival,
+                                target_destination_queue.ThisQueue[0].CreateTime)
+                        # Find earliest arrival time out of all waiting to go to this destination in this direction
+                        if SimClasses.Clock - target_destination_queue.ThisQueue[0].CreateTime >= self.max_wait_threshold:
+                            exceed_max_wait_threshold = True
+                            break
+                            # But if a queue has a person waiting past the allowed threshold, prioritize.
 
                 if sum > largest_count:
                     largest_count = sum
@@ -101,6 +118,10 @@ class ElevatorCarDestDispatch(ElevatorCarTraditional):
                     if destination_earliest_arrival < chosen_destination_earliest_arrival:
                         chosen_destination_earliest_arrival = destination_earliest_arrival
                         chosen_destination_direction = destination_direction
+                if exceed_max_wait_threshold:
+                    chosen_destination_direction = destination_direction
+                    break
+                # If someone exceeds max wait, prioritize.
                 # Choose the destination/direction with the largest count.
                 # In the case of a tie, choose the one with the earliest customer
 
@@ -110,8 +131,8 @@ class ElevatorCarDestDispatch(ElevatorCarTraditional):
                 self.destination_dispatched = chosen_destination_direction[0]
                 if chosen_destination_direction[1] == 1:
                     source_floors = np.nonzero(self.source_destination_matrix[
-                                            0:chosen_destination_direction[0]+1,
-                                            chosen_destination_direction[0]])[0]
+                        0:chosen_destination_direction[0] + 1,
+                        chosen_destination_direction[0]])[0]
                 else:
                     source_floors = np.nonzero(self.source_destination_matrix[
                                                chosen_destination_direction[0]::,

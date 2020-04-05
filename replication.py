@@ -79,7 +79,7 @@ class ReplicationTraditional:
         self.cars = [ElevatorCarTraditional(outer=self, capacity=car_capacity) for _ in range(0, self.num_cars)]
         # don't need SimFunctionsInit .. using separate replication instances
 
-    def __call__(self, print_trace:bool):
+    def __call__(self, print_trace: bool):
         return self.main(print_trace)
 
     class AssignRequestEvent(FunctionalEventNotice):
@@ -234,7 +234,8 @@ class ReplicationTraditional:
 
     def callback(self):
         print(f"Mean time in system: {np.mean(self.TimesInSystem.Observations)} "
-              f"Mean waiting time: {np.mean(self.WaitingTimes.Observations)}")
+              f"Mean waiting time: {np.mean(self.WaitingTimes.Observations)} "
+              f"Mean travel time: {np.mean(self.TravelTimes.Observations)}")
 
         arrivals_in_hours = np.array(self.AllArrivalTimes) / 60
         sns.lineplot(arrivals_in_hours, list(range(1, len(self.AllArrivalTimes) + 1)))
@@ -304,7 +305,7 @@ class ReplicationTraditional:
 
         for stat in self.AllStats:
             d, stat = self.apply_deletion_point(stat)
-            print("Deletion index:", d)
+            print("Deletion index:", d, "Number of stat datapoints:", len(stat.Observations))
 
         self.callback()
 
@@ -316,14 +317,14 @@ class ReplicationTraditional:
         q = 0
         m = len(stat.Observations)
         mser = []
-        for d in range(m-1, -1, -1):
+        for d in range(m - 1, -1, -1):
             s += stat.Observations[d]
             q += stat.Observations[d]**2
             mser.append((q - s**2 / (m - d)) / (m - d)**2)
 
         mser.reverse()
         for d in range(1, len(mser)):
-            if mser[d] <= min(mser[d-1], mser[d+1]):
+            if mser[d] <= min(mser[d - 1], mser[d + 1]):
                 stat.Observations = stat.Observations[d::]
                 return d, stat
 
@@ -331,7 +332,7 @@ class ReplicationTraditional:
 class ReplicationDestDispatch(ReplicationTraditional):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.source_destination_queue_matrix = np.array([[FIFOQueuePlus(id=(i,j), figure_dir=self.figure_dir)
+        self.source_destination_queue_matrix = np.array([[FIFOQueuePlus(id=(i, j), figure_dir=self.figure_dir)
                                                           for i, _ in enumerate(range(0, self.num_floors))]
                                                          for j, _ in enumerate(range(0, self.num_floors))])
         self.source_destination_matrix = np.frompyfunc(
@@ -354,14 +355,11 @@ class ReplicationDestDispatch(ReplicationTraditional):
             # trigger an action from the idle vehicle. otherwise it will stay idle indefinitely
             car_incoming = False
             for car in self.outer.cars:
-                ultimate_direction = np.nonzero(np.sum(car.requests, axis=0))[0].tolist()
-                assert len(ultimate_direction) <= 1
-                if len(ultimate_direction) > 0:
-                    ultimate_direction = ultimate_direction[0]
                 if car.destination_dispatched == self.new_passenger.destination_floor \
-                    and ultimate_direction == self.new_passenger.direction:
+                        and car.next_floor == self.new_passenger.source_floor and car.status == 1:
                     car.requests[self.new_passenger.source_floor, self.new_passenger.direction] += 1
                     car_incoming = True
+                    break
 
             if not car_incoming:
                 self.outer.source_destination_matrix[self.new_passenger.source_floor,
@@ -386,7 +384,9 @@ class ReplicationDestDispatch(ReplicationTraditional):
         ###############
 
     def callback(self):
-        print(f"Mean time in system: {self.TimesInSystem.Mean()} Mean waiting time: {self.WaitingTimes.Mean()}")
+        print(f"Mean time in system: {np.mean(self.TimesInSystem.Observations)} "
+              f"Mean waiting time: {np.mean(self.WaitingTimes.Observations)} "
+              f"Mean travel time: {np.mean(self.TravelTimes.Observations)}")
 
         arrivals_in_hours = np.array(self.AllArrivalTimes) / 60
         sns.lineplot(arrivals_in_hours, list(range(1, len(self.AllArrivalTimes) + 1)))
@@ -418,7 +418,7 @@ class ReplicationDestDispatch(ReplicationTraditional):
                 if queue.item().id[0] != queue.item().id[1]:
                     if i // self.num_floors == curr_floor:
                         df = pd.concat([df, pd.read_csv(f"{queue.item().figure_dir}/queue{queue.item().id}_lengths.csv",
-                                        names=['time', 'count'])])
+                                                        names=['time', 'count'])])
                     else:
                         df.time = df.time / 60
                         df = df.astype({'count': 'int64'})
@@ -435,4 +435,3 @@ class ReplicationDestDispatch(ReplicationTraditional):
             plt.title('Number of Patrons Queuing for Elevators by Floor Over Time (Destination Dispatch)')
             plt.legend()
             plt.show()
-

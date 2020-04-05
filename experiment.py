@@ -14,12 +14,14 @@ class Experiment:
         return self.main()
 
     def main(self):
-        TimesInSystem, WaitingTimes, TravelTimes = ReplicationTraditional(run_length=60 * 24,
-                                                                          num_floors=5,
+        TimesInSystem, WaitingTimes, TravelTimes = ReplicationDestDispatch(run_length=60 * 24,
+                                                                          num_floors=7,
                                                                           num_cars=2,
-                                                                          car_capacity=20,
-                                                                          write_to_csvs=False).main(print_trace=False)
-        print(np.mean(TimesInSystem.Observations), WaitingTimes.probInRangeCI95([0, 50/60]), TravelTimes.probInRangeCI95([0, 150/60]))
+                                                                          pop_per_floor=300,
+                                                                          write_to_csvs=False).main(print_trace=True)
+        print(np.mean(TimesInSystem.Observations),
+              WaitingTimes.probInRangeCI95([0, 50/60]),
+              TravelTimes.probInRangeCI95([0, 100/60]))
         pass
 
 Experiment(batch_size=20, quantile=0.99).main()
