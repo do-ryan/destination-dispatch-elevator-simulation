@@ -75,7 +75,7 @@ class ElevatorCarDestDispatch(ElevatorCarTraditional):
             largest_count = 0
             exceed_max_wait_threshold = False
             chosen_destination_direction = ()
-            chosen_destination_earliest_arrival = math.inf
+            chosen_destination_longest_wait = 0
             for i in range(2 * self.source_destination_matrix.shape[1]):
                 destination_direction = (i // 2, i % 2)
                 if destination_direction[1] == 1:
@@ -89,7 +89,7 @@ class ElevatorCarDestDispatch(ElevatorCarTraditional):
                                  ])
                 # Find count of passengers with this destination and direction
 
-                destination_earliest_arrival = math.inf
+                destination_longest_wait = 0
                 if destination_direction[1] == 0:
                     sweep = self.source_destination_queue_matrix[destination_direction[0]+1::,
                                                                  destination_direction[0]]
@@ -101,29 +101,27 @@ class ElevatorCarDestDispatch(ElevatorCarTraditional):
                     # O(num floors)
                     if target_destination_queue.ThisQueue:
                         if sum >= largest_count:
-                            destination_earliest_arrival = min(
-                                destination_earliest_arrival,
-                                target_destination_queue.ThisQueue[0].CreateTime)
+                            destination_longest_wait = max(
+                                destination_longest_wait,
+                                SimClasses.Clock - target_destination_queue.ThisQueue[0].CreateTime)
                         # Find earliest arrival time out of all waiting to go to this destination in this direction
-                        if SimClasses.Clock - target_destination_queue.ThisQueue[0].CreateTime >= self.max_wait_threshold:
-                            exceed_max_wait_threshold = True
-                            break
-                            # But if a queue has a person waiting past the allowed threshold, prioritize.
+                if destination_longest_wait >= self.max_wait_threshold:
+                        exceed_max_wait_threshold = True
+                            # But if any queue has a person waiting past the allowed threshold,
+                        # here on out prioritize only floors with people waiting past that threshold.
 
-                if sum > largest_count:
-                    largest_count = sum
-                    chosen_destination_direction = destination_direction
-                    chosen_destination_earliest_arrival = destination_earliest_arrival
-                elif sum == largest_count:
-                    if destination_earliest_arrival < chosen_destination_earliest_arrival:
-                        chosen_destination_earliest_arrival = destination_earliest_arrival
+                if destination_longest_wait >= self.max_wait_threshold or not exceed_max_wait_threshold:
+                    # if max wait threshold has not yet been exceeded, consider all. otherwise only consider those past threshold.
+                    if sum > largest_count:
+                        largest_count = sum
                         chosen_destination_direction = destination_direction
-                if exceed_max_wait_threshold:
-                    chosen_destination_direction = destination_direction
-                    break
-                # If someone exceeds max wait, prioritize.
-                # Choose the destination/direction with the largest count.
-                # In the case of a tie, choose the one with the earliest customer
+                        chosen_destination_longest_wait = destination_longest_wait
+                    elif sum == largest_count:
+                        if destination_longest_wait > chosen_destination_longest_wait:
+                            chosen_destination_longest_wait = destination_longest_wait
+                            chosen_destination_direction = destination_direction
+                    # Choose the destination/direction with the largest count.
+                    # In the case of a tie, choose the one with the longer wait
 
             if largest_count > 0:
                 # in the state where all combinations are WIP (all negative count) and this car has no tasks,

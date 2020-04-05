@@ -16,9 +16,9 @@ class Experiment:
     def main(self):
         TimesInSystem, WaitingTimes, TravelTimes = ReplicationDestDispatch(run_length=60 * 24,
                                                                           num_floors=7,
-                                                                          num_cars=2,
+                                                                          num_cars=6,
                                                                           pop_per_floor=300,
-                                                                          write_to_csvs=False).main(print_trace=True)
+                                                                          write_to_csvs=False).main(print_trace=False)
         print(np.mean(TimesInSystem.Observations),
               WaitingTimes.probInRangeCI95([0, 50/60]),
               TravelTimes.probInRangeCI95([0, 100/60]))
