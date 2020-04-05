@@ -73,6 +73,7 @@ class ReplicationTraditional:
         self.WaitingTimes = DTStatPlus()
         self.TimesInSystem = DTStatPlus()
         self.TravelTimes = DTStatPlus()
+        self.AllStats = [self.WaitingTimes, self.TimesInSystem, self.TravelTimes]
         self.AllArrivalTimes = []
 
         self.cars = [ElevatorCarTraditional(outer=self, capacity=car_capacity) for _ in range(0, self.num_cars)]
@@ -301,9 +302,30 @@ class ReplicationTraditional:
                 self.print_state()
             self.NextEvent = self.Calendar.Remove()
 
+        for stat in self.AllStats:
+            d, stat = self.apply_deletion_point(stat)
+            print("Deletion index:", d)
+
         self.callback()
 
         return self.TimesInSystem, self.WaitingTimes, self.TravelTimes
+
+    def apply_deletion_point(self, stat: DTStatPlus):
+        """Use time in system as estimator for MSER."""
+        s = 0
+        q = 0
+        m = len(stat.Observations)
+        mser = []
+        for d in range(m-1, -1, -1):
+            s += stat.Observations[d]
+            q += stat.Observations[d]**2
+            mser.append((q - s**2 / (m - d)) / (m - d)**2)
+
+        mser.reverse()
+        for d in range(1, len(mser)):
+            if mser[d] <= min(mser[d-1], mser[d+1]):
+                stat.Observations = stat.Observations[d::]
+                return d, stat
 
 
 class ReplicationDestDispatch(ReplicationTraditional):

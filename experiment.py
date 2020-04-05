@@ -1,5 +1,6 @@
 from replication import ReplicationDestDispatch, ReplicationTraditional
 
+import numpy as np
 
 class Experiment:
     def __init__(self,
@@ -18,7 +19,7 @@ class Experiment:
                                                                           num_cars=2,
                                                                           car_capacity=20,
                                                                           write_to_csvs=False).main(print_trace=False)
-        # print(TimesInSystem.Mean, WaitingTimes.probInRangeCI95([0, 50/60]), TravelTimes.probInRangeCI95([0, 150/60]))
+        print(np.mean(TimesInSystem.Observations), WaitingTimes.probInRangeCI95([0, 50/60]), TravelTimes.probInRangeCI95([0, 150/60]))
         pass
 
 Experiment(batch_size=20, quantile=0.99).main()
