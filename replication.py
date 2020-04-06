@@ -77,6 +77,8 @@ class ReplicationTraditional:
         self.AllArrivalTimes = []
 
         self.cars = [ElevatorCarTraditional(outer=self, capacity=car_capacity) for _ in range(0, self.num_cars)]
+        SimClasses.Clock = 0
+        SimRNG.ZRNG = SimRNG.InitializeRNSeed()
         # don't need SimFunctionsInit .. using separate replication instances
 
     def __call__(self, print_trace: bool):
@@ -134,7 +136,7 @@ class ReplicationTraditional:
                 assigned_car.status = 3  # in decision process status. must not keep as 0
                 assigned_car.next_action()
 
-    class PassengerArrivalEvent(FunctionalEventNotice):
+    class PassengerStationaryArrivalEvent(FunctionalEventNotice):
         """Simple uniformly distributed source and destination floor, stationary poisson."""
 
         def __init__(self, *args, **kwargs):
@@ -298,7 +300,8 @@ class ReplicationTraditional:
         while not isinstance(self.NextEvent, self.EndSimulationEvent):
             SimClasses.Clock = self.NextEvent.EventTime  # advance clock to start of next event
             self.NextEvent.event()
-            print(f"Executed event: {self.NextEvent} Current time: {SimClasses.Clock}, Post-event state below")
+            if print_trace:
+                print(f"Executed event: {self.NextEvent} Current time: {SimClasses.Clock}, Post-event state below")
             if print_trace:
                 self.print_state()
             self.NextEvent = self.Calendar.Remove()
@@ -307,7 +310,8 @@ class ReplicationTraditional:
             d, stat = self.apply_deletion_point(stat)
             print("Deletion index:", d, "Number of stat datapoints:", len(stat.Observations))
 
-        self.callback()
+        if self.write_to_csvs:
+            self.callback()
 
         return self.TimesInSystem, self.WaitingTimes, self.TravelTimes
 
@@ -435,3 +439,5 @@ class ReplicationDestDispatch(ReplicationTraditional):
             plt.title('Number of Patrons Queuing for Elevators by Floor Over Time (Destination Dispatch)')
             plt.legend()
             plt.show()
+
+print(ReplicationDestDispatch(run_length= 60*24,num_floors=9, pop_per_floor=300, num_cars=8)(print_trace=False)[1].probInRangeCI95([0, 50/60]))

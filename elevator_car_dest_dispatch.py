@@ -8,7 +8,7 @@ import math
 
 
 class ElevatorCarDestDispatch(ElevatorCarTraditional):
-    def __init__(self, outer, max_wait_threshold=5, *args, **kwargs):
+    def __init__(self, outer, max_wait_threshold=3, *args, **kwargs):
         """
         Args:
             - outer: ReplicationDestDispatch
