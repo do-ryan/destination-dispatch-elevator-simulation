@@ -33,13 +33,13 @@
         <counts>
           <entry key="Python Console" value="1660" />
           <entry key="dummy" value="130" />
-          <entry key="py" value="41695" />
+          <entry key="py" value="42843" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="PLAIN_TEXT" value="130" />
-          <entry key="Python" value="43355" />
+          <entry key="Python" value="44503" />
         </counts>
       </usages-collector>
     </session>
@@ -48,14 +48,14 @@
     <favorites_list name="code" />
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.6032028">
+    <splitter split-orientation="horizontal" split-proportion="0.54820716">
       <split-first>
         <leaf>
-          <file pinned="false" current-in-tab="true">
+          <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/replication.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="733">
-                  <caret line="313" column="12" selection-start-line="313" selection-start-column="12" selection-end-line="313" selection-end-column="12" />
+                <state relative-caret-position="307">
+                  <caret line="313" column="27" lean-forward="true" selection-start-line="313" selection-start-column="27" selection-end-line="313" selection-end-column="27" />
                   <folding>
                     <element signature="e#0#13#0" expanded="true" />
                   </folding>
@@ -81,15 +81,15 @@
               </provider>
             </entry>
           </file>
-          <file pinned="false" current-in-tab="false">
+          <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/experiment.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="679">
-                  <caret line="42" column="100" selection-start-line="42" selection-start-column="100" selection-end-line="42" selection-end-column="100" />
+                <state relative-caret-position="810">
+                  <caret line="75" column="37" selection-start-line="75" selection-start-column="37" selection-end-line="75" selection-end-column="37" />
                   <folding>
                     <element signature="e#0#71#0" expanded="true" />
-                    <marker date="1586139833725" expanded="true" signature="534:1128" ph="..." />
-                    <marker date="1586139833725" expanded="true" signature="1219:1242" ph="..." />
+                    <marker date="1586211238190" expanded="true" signature="546:1158" ph="..." />
+                    <marker date="1586211238190" expanded="true" signature="3249:3272" ph="..." />
                   </folding>
                 </state>
               </provider>
@@ -114,7 +114,7 @@
           <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/elevator_car_dest_dispatch.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="170">
+                <state relative-caret-position="-32">
                   <caret line="10" column="50" selection-start-line="10" selection-start-column="50" selection-end-line="10" selection-end-column="50" />
                   <folding>
                     <element signature="e#0#48#0" expanded="true" />
@@ -149,7 +149,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>SimFunctions.SchedulePlus</find>
       <find>next_floor</find>
       <find>status</find>
       <find>direction</find>
@@ -179,6 +178,7 @@
       <find>car.dest_passe</find>
       <find>callback</find>
       <find>pickup</find>
+      <find>fleet_sizes</find>
     </findStrings>
     <replaceStrings>
       <replace>queues</replace>
@@ -190,6 +190,7 @@
       <replace>scan_start</replace>
       <replace />
       <replace>0.5</replace>
+      <replace>I</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -211,16 +212,15 @@
         <option value="$PROJECT_DIR$/elevator_car_traditional.py" />
         <option value="$PROJECT_DIR$/custom_library.py" />
         <option value="$PROJECT_DIR$/elevator_car_dest_dispatch.py" />
-        <option value="$PROJECT_DIR$/experiment.py" />
         <option value="$PROJECT_DIR$/replication.py" />
+        <option value="$PROJECT_DIR$/experiment.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="189" />
-    <option name="y" value="216" />
-    <option name="width" value="1280" />
-    <option name="height" value="777" />
+    <option name="y" value="23" />
+    <option name="width" value="1920" />
+    <option name="height" value="1057" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -340,7 +340,7 @@
     <editor active="true" />
     <layout>
       <window_info id="Favorites" side_tool="true" />
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.11029024" />
+      <window_info content_ui="combo" id="Project" order="0" weight="0.16653386" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Version Control" show_stripe_button="false" />
       <window_info anchor="bottom" id="Python Console" weight="0.32947367" />
@@ -381,7 +381,7 @@
         </line-breakpoint>
         <line-breakpoint suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/experiment.py</url>
-          <line>44</line>
+          <line>94</line>
           <option name="timeStamp" value="91" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -572,7 +572,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/elevator_car_dest_dispatch.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
+        <state relative-caret-position="-32">
           <caret line="10" column="50" selection-start-line="10" selection-start-column="50" selection-end-line="10" selection-end-column="50" />
           <folding>
             <element signature="e#0#48#0" expanded="true" />
@@ -595,24 +595,24 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/experiment.py">
+    <entry file="file://$PROJECT_DIR$/replication.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="679">
-          <caret line="42" column="100" selection-start-line="42" selection-start-column="100" selection-end-line="42" selection-end-column="100" />
+        <state relative-caret-position="307">
+          <caret line="313" column="27" lean-forward="true" selection-start-line="313" selection-start-column="27" selection-end-line="313" selection-end-column="27" />
           <folding>
-            <element signature="e#0#71#0" expanded="true" />
-            <marker date="1586139833725" expanded="true" signature="534:1128" ph="..." />
-            <marker date="1586139833725" expanded="true" signature="1219:1242" ph="..." />
+            <element signature="e#0#13#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/replication.py">
+    <entry file="file://$PROJECT_DIR$/experiment.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="733">
-          <caret line="313" column="12" selection-start-line="313" selection-start-column="12" selection-end-line="313" selection-end-column="12" />
+        <state relative-caret-position="810">
+          <caret line="75" column="37" selection-start-line="75" selection-start-column="37" selection-end-line="75" selection-end-column="37" />
           <folding>
-            <element signature="e#0#13#0" expanded="true" />
+            <element signature="e#0#71#0" expanded="true" />
+            <marker date="1586211238190" expanded="true" signature="546:1158" ph="..." />
+            <marker date="1586211238190" expanded="true" signature="3249:3272" ph="..." />
           </folding>
         </state>
       </provider>
