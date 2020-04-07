@@ -328,10 +328,11 @@ class ReplicationTraditional:
             mser.append((q - s**2 / (m - d)) / (m - d)**2)
 
         mser.reverse()
-        for d in range(1, len(mser)):
+        for d in range(1, len(mser)-1):
             if mser[d] <= min(mser[d - 1], mser[d + 1]):
                 stat.Observations = stat.Observations[d::]
                 return d, stat
+        return 0, stat
 
 
 class ReplicationDestDispatch(ReplicationTraditional):

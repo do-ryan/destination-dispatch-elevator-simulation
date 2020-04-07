@@ -4,37 +4,71 @@ import numpy as np
 import math
 import sys
 import matplotlib.pyplot as plt
-import seaborn as sns; sns.set()
+import seaborn as sns
+sns.set()
 
 
 class Experiment:
     def __init__(self):
-        self.floor_counts = [3, 5, 10, 15]
-        self.floor_pops = [25, 50, 100, 200, 300]
-        self.fleet_sizes = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 18, 20, 25]
+        self.floor_counts = [10, 15, 25, 40]
+        self.floor_pops = [50, 100, 200, 300]
+        self.fleet_sizes = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 18, 20, 25, 30, 35, 40]
         self.base_path = '../experiments'
 
     def __call__(self):
         return self.main()
 
-    @staticmethod
-    def fleet_sizing_by_prob_threshold(replication_class,
+    def fleet_sizing_by_prob_threshold(self,
+                                       replication_class,
                                        num_floors,
                                        pop_per_floor,
-                                       fleet_sizes=[2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 15, 20],
                                        target=50 / 60,
                                        threshold=0.95,
+                                       min_fleet_size=0,
+                                       max_fleet_size=60,
                                        output_index=1):
-        for fleet_size in fleet_sizes:
-            replication = replication_class(run_length=60 * 24 * 2,
-                                            num_floors=num_floors,
-                                            pop_per_floor=pop_per_floor,
-                                            num_cars=fleet_size)
-            output_stats = replication.main(print_trace=False)  # 2 is waiting time
-            output = output_stats[output_index]
-            print(f"fleet size: {fleet_size}, prob: {output.probInRangeCI95([0, target])}")
-            if output.probInRangeCI95([0, target])[1][0] >= threshold:
-                return fleet_size
+        if min_fleet_size == max_fleet_size:
+            return max_fleet_size
+        mid = (max_fleet_size + min_fleet_size) // 2
+        replication = replication_class(run_length=60 * 24 * 2,
+                                        num_floors=num_floors,
+                                        pop_per_floor=pop_per_floor,
+                                        num_cars=mid)
+        output_stats = replication.main(print_trace=False)  # 2 is waiting time
+        output = output_stats[output_index]
+        print(f"fleet size: {mid}, prob: {output.probInRangeCI95([0, target])}")
+        if output.probInRangeCI95([0, target])[1][0] >= threshold:
+            return self.fleet_sizing_by_prob_threshold(min_fleet_size=min_fleet_size,
+                                                       max_fleet_size=mid,
+                                                       replication_class=replication_class,
+                                                       num_floors=num_floors,
+                                                       pop_per_floor=pop_per_floor)
+        else:
+            return self.fleet_sizing_by_prob_threshold(min_fleet_size=mid + 1,
+                                                       max_fleet_size=max_fleet_size,
+                                                       replication_class=replication_class,
+                                                       num_floors=num_floors,
+                                                       pop_per_floor=pop_per_floor)
+
+    # def fleet_sizing_by_prob_threshold(self,
+    #                                    replication_class,
+    #                                    num_floors,
+    #                                    pop_per_floor,
+    #                                    target=50 / 60,
+    #                                    threshold=0.95,
+    #                                    output_index=1):
+    #     """Iterative algorithm O(n)"""
+    #     fleet_sizes = self.fleet_sizes
+    #     for fleet_size in fleet_sizes:
+    #         replication = replication_class(run_length=60 * 24 * 2,
+    #                                         num_floors=num_floors,
+    #                                         pop_per_floor=pop_per_floor,
+    #                                         num_cars=fleet_size)
+    #         output_stats = replication.main(print_trace=False)  # 2 is waiting time
+    #         output = output_stats[output_index]
+    #         print(f"fleet size: {fleet_size}, prob: {output.probInRangeCI95([0, target])}")
+    #         if output.probInRangeCI95([0, target])[1][0] >= threshold:
+    #             return fleet_size
 
     @staticmethod
     def fleet_sizing_by_best_selection(replication_class,
@@ -127,7 +161,6 @@ class Experiment:
         plt.title("Net improvement of Destination Dispatch for elevator car fleet sizing measured by wait time")
         plt.show()
 
-
     def main(self):
         waiting_time_threshold = 50 / 60
         floor_distance = 4.5
@@ -142,33 +175,29 @@ class Experiment:
                     num_floors=floor_count,
                     pop_per_floor=floor_pop,
                     target=tis_threshold,
-                    fleet_sizes=self.fleet_sizes,
                     output_index=0)
                 fleet_size_dd_tis = self.fleet_sizing_by_prob_threshold(
                     replication_class=ReplicationDestDispatch,
                     num_floors=floor_count,
                     pop_per_floor=floor_pop,
                     target=tis_threshold,
-                    fleet_sizes=self.fleet_sizes,
                     output_index=0)
                 fleet_size_trad_wait = self.fleet_sizing_by_prob_threshold(
                     replication_class=ReplicationTraditional,
                     num_floors=floor_count,
                     pop_per_floor=floor_pop,
                     target=waiting_time_threshold,
-                    fleet_sizes=self.fleet_sizes,
                     output_index=1)
                 fleet_size_dd_wait = self.fleet_sizing_by_prob_threshold(
                     replication_class=ReplicationDestDispatch,
                     num_floors=floor_count,
                     pop_per_floor=floor_pop,
                     target=waiting_time_threshold,
-                    fleet_sizes=self.fleet_sizes,
                     output_index=1)
                 print(fleet_size_trad_tis, fleet_size_dd_tis)
                 print(fleet_size_trad_wait, fleet_size_dd_wait)
 
 
 exp = Experiment()
-# exp.main()
-exp.figures()
+exp.main()
+# exp.figures()
