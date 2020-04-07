@@ -2,12 +2,20 @@ from replication import ReplicationDestDispatch, ReplicationTraditional
 
 import numpy as np
 import math
-from scipy.stats import t
+import sys
+import matplotlib.pyplot as plt
+import seaborn as sns; sns.set()
 
 
 class Experiment:
     def __init__(self):
-        pass
+        # self.floor_counts = [3, 5, 10, 15]
+        # self.floor_pops = [25, 50, 100, 200, 300]
+        # self.fleet_sizes = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 18, 20, 25]
+        self.floor_counts = [15]
+        self.floor_pops = [300]
+        self.fleet_sizes = [30, 35]
+        self.base_path = '../experiments'
 
     def __call__(self):
         return self.main()
@@ -84,34 +92,80 @@ class Experiment:
 
         return I
 
-    @classmethod
-    def main(cls):
-        print(
-            cls.fleet_sizing_by_prob_threshold(
-                replication_class=ReplicationTraditional,
-                num_floors=10,
-                pop_per_floor=100,
-                target=90 / 60,
-                output_index=0))
-        print(
-            cls.fleet_sizing_by_prob_threshold(
-                replication_class=ReplicationDestDispatch,
-                num_floors=10,
-                pop_per_floor=100,
-                target=90 / 60,
-                output_index=0))
+    def figures(self):
+        tis_trad = np.empty(shape=(len(self.floor_counts), len(self.floor_pops)))
+        tis_dd = np.empty(shape=(len(self.floor_counts), len(self.floor_pops)))
+        wait_trad = np.empty(shape=(len(self.floor_counts), len(self.floor_pops)))
+        wait_dd = np.empty(shape=(len(self.floor_counts), len(self.floor_pops)))
+        for i, floor_count in enumerate(self.floor_counts):
+            for j, floor_pop in enumerate(self.floor_pops):
+                f = open(f"{self.base_path}/{floor_count}floors_{floor_pop}pflr.txt", "r")
+                contents = f.read()
+                tis, wait = tuple([(int(measure_fleetsizes.split(' ')[0]), int(measure_fleetsizes.split(' ')[-1]))
+                                   for measure_fleetsizes in contents[-2:-9:-1][::-1].split('\n')])
+                tis_trad[i][j] = tis[0]
+                tis_dd[i][j] = tis[1]
+                wait_trad[i][j] = wait[0]
+                wait_dd[i][j] = wait[1]
 
-        # print(
-        #     cls.fleet_sizing_by_best_selection(
-        #         replication_class=ReplicationTraditional,
-        #         num_floors=10,
-        #         pop_per_floor=100))
-        # print(
-        #     cls.fleet_sizing_by_best_selection(
-        #         replication_class=ReplicationDestDispatch,
-        #         num_floors=10,
-        #         pop_per_floor=100))
-        pass
+        sns.heatmap(tis_trad)
+        plt.title("Required number of elevator cars to achieve (3*(building height/ top speed)+50)s journey time with 95% probability at 95% confidence (Traditional Algorithm)")
+        sns.heatmap(tis_dd)
+        plt.title("Required number of elevator cars to achieve (3*(building height/ top speed)+50)s journey time with 95% probability at 95% confidence (Destination Dispatch Algorithm)")
+        sns.heatmap(wait_trad)
+        plt.title("Required number of elevator cars to achieve 50s wait time with 95% probability at 95% confidence (Traditional Algorithm)")
+        sns.heatmap(wait_dd)
+        plt.title("Required number of elevator cars to achieve 50s wait time with 95% probability at 95% confidence (Destination Dispatch Algorithm)")
+        sns.heatmap(tis_dd - tis_trad)
+        plt.title("Net improvement of Destination Dispatch for elevator car fleet sizing measured by journey time")
+        sns.heatmap(wait_dd - wait_trad)
+        plt.title("Net improvement of Destination Dispatch for elevator car fleet sizing measured by journey time")
+        plt.xlabel("Number of patrons per floor")
+        plt.ylabel("Number of floors")
+        plt.show()
 
 
-Experiment.main()
+    def main(self):
+        waiting_time_threshold = 50 / 60
+        floor_distance = 4.5
+        top_speed = 3.0
+
+        for floor_count in self.floor_counts:
+            tis_threshold = (floor_distance * floor_count / top_speed * 3) / 60 + waiting_time_threshold
+            for floor_pop in self.floor_pops:
+                sys.stdout = open(f'{self.base_path}/{floor_count}floors_{floor_pop}pflr.txt', 'w+')
+                fleet_size_trad_tis = self.fleet_sizing_by_prob_threshold(
+                    replication_class=ReplicationTraditional,
+                    num_floors=floor_count,
+                    pop_per_floor=floor_pop,
+                    target=tis_threshold,
+                    fleet_sizes=self.fleet_sizes,
+                    output_index=0)
+                fleet_size_dd_tis = self.fleet_sizing_by_prob_threshold(
+                    replication_class=ReplicationDestDispatch,
+                    num_floors=floor_count,
+                    pop_per_floor=floor_pop,
+                    target=tis_threshold,
+                    fleet_sizes=self.fleet_sizes,
+                    output_index=0)
+                fleet_size_trad_wait = self.fleet_sizing_by_prob_threshold(
+                    replication_class=ReplicationTraditional,
+                    num_floors=floor_count,
+                    pop_per_floor=floor_pop,
+                    target=waiting_time_threshold,
+                    fleet_sizes=self.fleet_sizes,
+                    output_index=1)
+                fleet_size_dd_wait = self.fleet_sizing_by_prob_threshold(
+                    replication_class=ReplicationDestDispatch,
+                    num_floors=floor_count,
+                    pop_per_floor=floor_pop,
+                    target=waiting_time_threshold,
+                    fleet_sizes=self.fleet_sizes,
+                    output_index=1)
+                print(fleet_size_trad_tis, fleet_size_dd_tis)
+                print(fleet_size_trad_wait, fleet_size_dd_wait)
+
+
+exp = Experiment()
+exp.main()
+# exp.figures()
