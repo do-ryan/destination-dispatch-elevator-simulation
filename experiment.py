@@ -9,12 +9,9 @@ import seaborn as sns; sns.set()
 
 class Experiment:
     def __init__(self):
-        # self.floor_counts = [3, 5, 10, 15]
-        # self.floor_pops = [25, 50, 100, 200, 300]
-        # self.fleet_sizes = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 18, 20, 25]
-        self.floor_counts = [15]
-        self.floor_pops = [300]
-        self.fleet_sizes = [30, 35]
+        self.floor_counts = [3, 5, 10, 15]
+        self.floor_pops = [25, 50, 100, 200, 300]
+        self.fleet_sizes = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 18, 20, 25]
         self.base_path = '../experiments'
 
     def __call__(self):
@@ -46,6 +43,7 @@ class Experiment:
                                        fleet_sizes=[2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 15, 20],
                                        alpha=0.05,
                                        delta=0.25):  # delta of 0.0005 seems to give me an indifference zone of 5s...
+        """Unused"""
         n_0 = math.inf
         Y = []
         I = fleet_sizes
@@ -102,26 +100,31 @@ class Experiment:
                 f = open(f"{self.base_path}/{floor_count}floors_{floor_pop}pflr.txt", "r")
                 contents = f.read()
                 tis, wait = tuple([(int(measure_fleetsizes.split(' ')[0]), int(measure_fleetsizes.split(' ')[-1]))
-                                   for measure_fleetsizes in contents[-2:-9:-1][::-1].split('\n')])
+                                   for measure_fleetsizes in contents.split('\n')[-2:-4:-1][::-1]])
                 tis_trad[i][j] = tis[0]
                 tis_dd[i][j] = tis[1]
                 wait_trad[i][j] = wait[0]
                 wait_dd[i][j] = wait[1]
 
-        sns.heatmap(tis_trad)
+        sns.heatmap(tis_trad, cmap="YlGnBu")
         plt.title("Required number of elevator cars to achieve (3*(building height/ top speed)+50)s journey time with 95% probability at 95% confidence (Traditional Algorithm)")
-        sns.heatmap(tis_dd)
-        plt.title("Required number of elevator cars to achieve (3*(building height/ top speed)+50)s journey time with 95% probability at 95% confidence (Destination Dispatch Algorithm)")
-        sns.heatmap(wait_trad)
-        plt.title("Required number of elevator cars to achieve 50s wait time with 95% probability at 95% confidence (Traditional Algorithm)")
-        sns.heatmap(wait_dd)
-        plt.title("Required number of elevator cars to achieve 50s wait time with 95% probability at 95% confidence (Destination Dispatch Algorithm)")
-        sns.heatmap(tis_dd - tis_trad)
-        plt.title("Net improvement of Destination Dispatch for elevator car fleet sizing measured by journey time")
-        sns.heatmap(wait_dd - wait_trad)
-        plt.title("Net improvement of Destination Dispatch for elevator car fleet sizing measured by journey time")
         plt.xlabel("Number of patrons per floor")
         plt.ylabel("Number of floors")
+        plt.show()
+        sns.heatmap(tis_dd)
+        plt.title("Required number of elevator cars to achieve (3*(building height/ top speed)+50)s journey time with 95% probability at 95% confidence (Destination Dispatch Algorithm)")
+        plt.show()
+        sns.heatmap(wait_trad)
+        plt.title("Required number of elevator cars to achieve 50s wait time with 95% probability at 95% confidence (Traditional Algorithm)")
+        plt.show()
+        sns.heatmap(wait_dd)
+        plt.title("Required number of elevator cars to achieve 50s wait time with 95% probability at 95% confidence (Destination Dispatch Algorithm)")
+        plt.show()
+        sns.heatmap(tis_dd - tis_trad)
+        plt.title("Net improvement of Destination Dispatch for elevator car fleet sizing measured by journey time")
+        plt.show()
+        sns.heatmap(wait_dd - wait_trad)
+        plt.title("Net improvement of Destination Dispatch for elevator car fleet sizing measured by wait time")
         plt.show()
 
 
@@ -167,5 +170,5 @@ class Experiment:
 
 
 exp = Experiment()
-exp.main()
-# exp.figures()
+# exp.main()
+exp.figures()
