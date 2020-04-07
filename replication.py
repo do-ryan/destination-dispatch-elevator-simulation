@@ -313,6 +313,7 @@ class ReplicationTraditional:
         if self.write_to_csvs:
             self.callback()
 
+        print(CI_95(self.TimesInSystem.Observations), self.WaitingTimes.probInRangeCI95([0, 50/60]))
         return self.TimesInSystem, self.WaitingTimes, self.TravelTimes
 
     def apply_deletion_point(self, stat: DTStatPlus):
@@ -440,4 +441,4 @@ class ReplicationDestDispatch(ReplicationTraditional):
             plt.legend()
             plt.show()
 
-print(ReplicationDestDispatch(run_length= 60*24,num_floors=9, pop_per_floor=300, num_cars=8)(print_trace=False)[1].probInRangeCI95([0, 50/60]))
+# print(ReplicationDestDispatch(run_length= 60*24,num_floors=9, pop_per_floor=300, num_cars=8)(print_trace=False)[1].probInRangeCI95([0, 50/60]))
