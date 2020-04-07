@@ -14,19 +14,21 @@ class Experiment:
 
     @staticmethod
     def fleet_sizing_by_prob_threshold(replication_class,
-                                  num_floors,
-                                  pop_per_floor,
-                                  fleet_sizes=[2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 15, 20],
-                                  target=50/60,
-                                  threshold=0.95):
+                                       num_floors,
+                                       pop_per_floor,
+                                       fleet_sizes=[2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 15, 20],
+                                       target=50 / 60,
+                                       threshold=0.95,
+                                       output_index=1):
         for fleet_size in fleet_sizes:
             replication = replication_class(run_length=60 * 24 * 2,
                                             num_floors=num_floors,
                                             pop_per_floor=pop_per_floor,
                                             num_cars=fleet_size)
-            _, stat, _ = replication.main(print_trace=False)  # 2 is waiting time
-            print(f"fleet size: {fleet_size}, prob: {stat.probInRangeCI95([0, target])}")
-            if stat.probInRangeCI95([0, 50 / 60])[1][0] >= threshold:
+            output_stats = replication.main(print_trace=False)  # 2 is waiting time
+            output = output_stats[output_index]
+            print(f"fleet size: {fleet_size}, prob: {output.probInRangeCI95([0, target])}")
+            if output.probInRangeCI95([0, target])[1][0] >= threshold:
                 return fleet_size
 
     @staticmethod
@@ -84,8 +86,20 @@ class Experiment:
 
     @classmethod
     def main(cls):
-        print(cls.fleet_sizing_by_prob_threshold(replication_class=ReplicationTraditional, num_floors=10, pop_per_floor=100, target=50/60))
-        print(cls.fleet_sizing_by_prob_threshold(replication_class=ReplicationDestDispatch, num_floors=10, pop_per_floor=100, target=50/60))
+        print(
+            cls.fleet_sizing_by_prob_threshold(
+                replication_class=ReplicationTraditional,
+                num_floors=10,
+                pop_per_floor=100,
+                target=90 / 60,
+                output_index=0))
+        print(
+            cls.fleet_sizing_by_prob_threshold(
+                replication_class=ReplicationDestDispatch,
+                num_floors=10,
+                pop_per_floor=100,
+                target=90 / 60,
+                output_index=0))
 
         # print(
         #     cls.fleet_sizing_by_best_selection(
