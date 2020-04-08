@@ -60,7 +60,7 @@ class ReplicationTraditional:
 
         self.write_to_csvs = write_to_csvs
         if self.write_to_csvs:
-            self.figure_dir = '/Users/ryando/Dropbox/MEng/MIE1613/Project/figures/data'
+            self.figure_dir = '../figures/data'
             shutil.rmtree(self.figure_dir)
             os.mkdir(self.figure_dir)
         else:
@@ -248,12 +248,12 @@ class ReplicationTraditional:
         plt.show()
 
         sns.distplot(self.TimesInSystem.Observations)  # plot histogram of times in system
-        plt.title("Patron Time in System")
+        plt.title(f"Patron Time in System ({self.num_cars} cars, {self.num_floors} floors, {self.pop_per_floor} patrons per floor)")
         plt.xlabel("Time (minutes)")
         plt.show()
 
         sns.distplot(self.WaitingTimes.Observations)
-        plt.title("Patron Waiting Time")
+        plt.title(f"Patron Waiting Time ({self.num_cars} cars, {self.num_floors} floors, {self.pop_per_floor} patrons per floor)")
         plt.xlabel("Time (minutes)")
         plt.show()
 
@@ -403,12 +403,12 @@ class ReplicationDestDispatch(ReplicationTraditional):
         plt.show()
 
         sns.distplot(self.TimesInSystem.Observations)  # plot histogram of times in system
-        plt.title("Patron Time in System")
+        plt.title(f"Patron Time in System ({self.num_cars} cars, {self.num_floors} floors, {self.pop_per_floor} patrons per floor)")
         plt.xlabel("Time (minutes)")
         plt.show()
 
         sns.distplot(self.WaitingTimes.Observations)
-        plt.title("Patron Waiting Time")
+        plt.title(f"Patron Waiting Time ({self.num_cars} cars, {self.num_floors} floors, {self.pop_per_floor} patrons per floor)")
         plt.xlabel("Time (minutes)")
         plt.show()
 
@@ -428,18 +428,18 @@ class ReplicationDestDispatch(ReplicationTraditional):
                     else:
                         df.time = df.time / 60
                         df = df.astype({'count': 'int64'})
-                        sns.lineplot(x='time', y='count', label=f'floor {curr_floor}', data=df)
+                        sns.lineplot(x='time', y='count', label=f'floor {curr_floor}', data=df, legend=False)
                         curr_floor = i // self.num_floors
                         df = pd.read_csv(f"{queue.item().figure_dir}/queue{queue.item().id}_lengths.csv",
                                          names=['time', 'count'])
             df.time = df.time / 60
             df = df.astype({'count': 'int64'})
-            sns.lineplot(x='time', y='count', label=f'floor {curr_floor}', data=df)
+            sns.lineplot(x='time', y='count', label=f'floor {curr_floor}', data=df, legend=False)
             # graph queue sizes over time by floor
             plt.xticks(range(math.floor(min(df.time)), math.ceil(max(df.time)) + 1))
             plt.xlabel("Time (24H)")
             plt.title('Number of Patrons Queuing for Elevators by Floor Over Time (Destination Dispatch)')
-            plt.legend()
+            plt.legend(loc='upper left')
             plt.show()
 
-# print(ReplicationDestDispatch(run_length= 60*24,num_floors=9, pop_per_floor=300, num_cars=8)(print_trace=False)[1].probInRangeCI95([0, 50/60]))
+print(ReplicationTraditional(run_length= 60*24,num_floors=10, pop_per_floor=300, num_cars=12, write_to_csvs=True)(print_trace=False)[1].probInRangeCI95([0, 50/60]))

@@ -10,8 +10,8 @@ sns.set()
 
 class Experiment:
     def __init__(self):
-        self.floor_counts = [10, 15, 25, 40]
-        self.floor_pops = [50, 100, 200, 300]
+        self.floor_counts = [3, 5, 10, 15, 20, 25, 30]
+        self.floor_pops = [25, 50, 100, 200, 300]
         self.fleet_sizes = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 18, 20, 25, 30, 35, 40]
         self.base_path = '../experiments'
 
@@ -25,7 +25,7 @@ class Experiment:
                                        target=50 / 60,
                                        threshold=0.95,
                                        min_fleet_size=0,
-                                       max_fleet_size=60,
+                                       max_fleet_size=100,
                                        output_index=1):
         if min_fleet_size == max_fleet_size:
             return max_fleet_size
@@ -140,25 +140,35 @@ class Experiment:
                 wait_trad[i][j] = wait[0]
                 wait_dd[i][j] = wait[1]
 
-        sns.heatmap(tis_trad, cmap="YlGnBu")
-        plt.title("Required number of elevator cars to achieve (3*(building height/ top speed)+50)s journey time with 95% probability at 95% confidence (Traditional Algorithm)")
+        sns.heatmap(tis_trad, xticklabels=self.floor_pops, yticklabels=self.floor_counts, linewidths=0.25, annot=True)
+        plt.title("Required number of elevator cars to achieve (3*(building height/ top speed)+50)s\n journey time with 95% probability at 95% confidence (Traditional Algorithm)")
         plt.xlabel("Number of patrons per floor")
         plt.ylabel("Number of floors")
         plt.show()
-        sns.heatmap(tis_dd)
-        plt.title("Required number of elevator cars to achieve (3*(building height/ top speed)+50)s journey time with 95% probability at 95% confidence (Destination Dispatch Algorithm)")
+        sns.heatmap(tis_dd, xticklabels=self.floor_pops, yticklabels=self.floor_counts, linewidths=0.25, annot=True)
+        plt.title("Required number of elevator cars to achieve (3*(building height/ top speed)+50)s\n journey time with 95% probability at 95% confidence (Destination Dispatch Algorithm)")
+        plt.xlabel("Number of patrons per floor")
+        plt.ylabel("Number of floors")
         plt.show()
-        sns.heatmap(wait_trad)
-        plt.title("Required number of elevator cars to achieve 50s wait time with 95% probability at 95% confidence (Traditional Algorithm)")
+        sns.heatmap(wait_trad, xticklabels=self.floor_pops, yticklabels=self.floor_counts, linewidths=0.25, annot=True)
+        plt.title("Required number of elevator cars to achieve 50s wait time\n with 95% probability at 95% confidence (Traditional Algorithm)")
+        plt.xlabel("Number of patrons per floor")
+        plt.ylabel("Number of floors")
         plt.show()
-        sns.heatmap(wait_dd)
-        plt.title("Required number of elevator cars to achieve 50s wait time with 95% probability at 95% confidence (Destination Dispatch Algorithm)")
+        sns.heatmap(wait_dd, xticklabels=self.floor_pops, yticklabels=self.floor_counts, linewidths=0.25, annot=True)
+        plt.title("Required number of elevator cars to achieve 50s wait time\n with 95% probability at 95% confidence (Destination Dispatch Algorithm)")
+        plt.xlabel("Number of patrons per floor")
+        plt.ylabel("Number of floors")
         plt.show()
-        sns.heatmap(tis_dd - tis_trad)
-        plt.title("Net improvement of Destination Dispatch for elevator car fleet sizing measured by journey time")
+        sns.heatmap(tis_dd - tis_trad, xticklabels=self.floor_pops, yticklabels=self.floor_counts, linewidths=0.25, annot=True)
+        plt.title("Net improvement of Destination Dispatch\n for elevator car fleet sizing measured by journey time")
+        plt.xlabel("Number of patrons per floor")
+        plt.ylabel("Number of floors")
         plt.show()
-        sns.heatmap(wait_dd - wait_trad)
-        plt.title("Net improvement of Destination Dispatch for elevator car fleet sizing measured by wait time")
+        sns.heatmap(wait_dd - wait_trad, xticklabels=self.floor_pops, yticklabels=self.floor_counts, linewidths=0.25, annot=True)
+        plt.title("Net improvement of Destination Dispatch\n for elevator car fleet sizing measured by wait time")
+        plt.xlabel("Number of patrons per floor")
+        plt.ylabel("Number of floors")
         plt.show()
 
     def main(self):
@@ -199,5 +209,5 @@ class Experiment:
 
 
 exp = Experiment()
-exp.main()
-# exp.figures()
+# exp.main()
+exp.figures()
