@@ -442,4 +442,4 @@ class ReplicationDestDispatch(ReplicationTraditional):
             plt.legend(loc='upper left')
             plt.show()
 
-print(ReplicationTraditional(run_length= 60*24,num_floors=10, pop_per_floor=300, num_cars=12, write_to_csvs=True)(print_trace=False)[1].probInRangeCI95([0, 50/60]))
+print(ReplicationTraditional(run_length= 60*24,num_floors=5, pop_per_floor=100, num_cars=2, write_to_csvs=False)(print_trace=True)[1].probInRangeCI95([0, 50/60]))
